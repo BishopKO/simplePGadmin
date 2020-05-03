@@ -35,13 +35,20 @@ const LoginForm = () => {
     document.querySelectorAll('.LoginForm Input').forEach((item) => {
       config[item.name] = item.value;
     });
-    authenticate(config);
+
+    authenticate(config).then((resp) => {
+      if (resp[0].usename === config.user) {
+        document.cookie = Object.values(config);
+      } else {
+        console.log(resp);
+      }
+    });
   };
 
   return (
     <StyledWrapper>
       <StyledForm className="LoginForm">
-        <Input label="Username" name="username" />
+        <Input label="Username" name="user" />
         <Input label="Password" name="password" type="password" />
         <Input label="Host" name="host" />
         <Input label="Database" name="database" />
