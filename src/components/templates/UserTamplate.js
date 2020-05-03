@@ -9,6 +9,7 @@ const StyledWrapper = styled.div`
   grid-template-columns: 200px 1fr;
   grid-gap: 0;
   border-radius: 5px;
+  border: 1px solid black;
   overflow: hidden;
 `;
 

@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 const StyledWrapper = styled.div`
   position: relative;
-  width: 150px;
+  width: 100%;
   height: 30px;
-  padding: 4px;
+  margin-top: 10px;  
   display: flex;
   flex-direction: column;
 
@@ -13,27 +13,27 @@ const StyledWrapper = styled.div`
     position: absolute;
     content: "${({ label }) => label}";
     background: white;
-    font-size: 0.8rem;
-    height: 5px;
+    font-size: 1rem;
+    height: 6px;
     padding: 0 2px 0 2px;
-    top: 0;
-    left: 10px;
+    top: -5px;
+    left: 5px;
   }
 `;
 
 const StyledInput = styled.input`
-  border: 1px solid grey;
+  border: ${({ theme }) => `1px solid ${theme.fifth}`};
+  border-radius: 2px;
   width: 100%;
   height: 100%;
   padding: 2px;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
 `;
 
-const Input = ({ label }) => {
-  useEffect(() => console.log(label));
+const Input = ({ label, type, name }) => {
   return (
     <StyledWrapper label={label}>
-      <StyledInput />
+      <StyledInput type={type ? type : 'text'} name={name} />
     </StyledWrapper>
   );
 };
