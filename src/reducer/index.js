@@ -1,17 +1,22 @@
 const initState = {
-  user: '',
-  password: '',
-  host: '',
-  port: '',
+  config: {
+    user: '',
+    password: '',
+    host: '',
+    port: '',
+  },
+  databases: [],
 };
 
 const myReducer = (state = initState, action) => {
+  console.log(action.type);
   switch (action.type) {
     case 'SAVE_USER':
       return {
-        ...action.payload.config,
+        ...state,
+        ...state[action.payload.config],
       };
-    case 'LOGOUT':
+    case 'REMOVE_USER':
       return initState;
     default:
       return state;

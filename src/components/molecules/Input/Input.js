@@ -14,7 +14,7 @@ const StyledWrapper = styled.div`
     content: "${({ label }) => label}";
     background: white;
     font-size: 1rem;
-    height: 6px;
+    height: 8px;
     padding: 0 2px 0 2px;
     top: -5px;
     left: 5px;
@@ -23,7 +23,7 @@ const StyledWrapper = styled.div`
 
 const StyledInput = styled.input`
   border: ${({ theme }) => `1px solid ${theme.fifth}`};
-  border-radius: 2px;
+  border-radius: 4px;
   width: 100%;
   height: 100%;
   padding: 2px;

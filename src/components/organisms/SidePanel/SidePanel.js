@@ -4,10 +4,12 @@ import LoginForm from 'components/organisms/LoginForm/LoginForm';
 
 const StyledWrapper = styled.div`
   width: 100%;
-  height: 50%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  border-right: 1px solid black;
+  background: white;
 `;
 
 const SidePanel = () => (

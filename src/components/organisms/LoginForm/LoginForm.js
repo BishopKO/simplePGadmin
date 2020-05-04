@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Input from 'components/molecules/Input/Input';
 import { connect } from 'react-redux';
-import { authenticate } from 'actions';
-import { saveUserAction } from 'actions';
+import { authenticate, saveUserAction, removeUserAction } from 'actions';
 
 const StyledWrapper = styled.div`
   width: 200px;
@@ -22,29 +21,37 @@ const StyledForm = styled.form`
 
 const StyledButton = styled.button`
   width: 100%;
-  height: 30px;
+  height: 35px;
   margin-top: 10px;
-  background: ${({ theme }) => theme.fifth};
+  background: ${({ theme }) => theme.first};
   border: none;
-  border-radius: 2px;
+  border-radius: 5px;
   color: white;
   font-size: 1.5rem;
 `;
 
-const LoginForm = ({ saveUser }) => {
+const LoginForm = ({ saveUser, removeUser }) => {
+  const [loggedin, setLoggedin] = useState(false);
+
   const handleCheckLogin = () => {
     const config = {};
     document.querySelectorAll('.LoginForm Input').forEach((item) => {
       config[item.name] = item.value;
     });
 
-    authenticate(config).then((resp) => {
-      if ('error' in resp) {
-        alert('Login error');
-      } else {
-        saveUser(config);
-      }
-    });
+    if (loggedin) {
+      setLoggedin(false);
+      removeUser();
+    } else {
+      authenticate(config).then((resp) => {
+        if ('error' in resp) {
+          alert('Login error');
+        } else {
+          saveUser(config);
+          setLoggedin(true);
+        }
+      });
+    }
   };
 
   return (
@@ -55,7 +62,7 @@ const LoginForm = ({ saveUser }) => {
         <Input label="Host" name="host" />
         <Input label="Database" name="database" />
         <StyledButton type="button" onClick={handleCheckLogin}>
-          Connect
+          {loggedin ? 'Disconnect' : 'Connect'}
         </StyledButton>
       </StyledForm>
     </StyledWrapper>
@@ -63,6 +70,7 @@ const LoginForm = ({ saveUser }) => {
 };
 const mapDispatchToProps = (dispatch) => ({
   saveUser: (config) => dispatch(saveUserAction(config)),
+  removeUser: () => dispatch(removeUserAction()),
 });
 
 export default connect(null, mapDispatchToProps)(LoginForm);

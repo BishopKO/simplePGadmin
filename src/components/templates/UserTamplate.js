@@ -14,11 +14,11 @@ const StyledWrapper = styled.div`
   overflow: hidden;
 `;
 
-const UserTemplate = () => {
+const UserTemplate = ({ children }) => {
   return (
     <StyledWrapper>
-      <SidePanel saveUser={'saveuser'} />
-      <MainViewTemplate />
+      <SidePanel />
+      <MainViewTemplate>{children}</MainViewTemplate>
     </StyledWrapper>
   );
 };

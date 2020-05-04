@@ -18,9 +18,15 @@ app.post('/login', (req, res) => {
 });
 
 app.post('/databases', (req, res) => {
+  const config = req.body;
+  console.log(config);
   sendQuery
-    .sendQuery(clientConnection, 'select datname from pg_database')
-    .then((resp) => res.json(resp));
+    .sendQuery(config, 'select datname from pg_database')
+    .then((resp) => res.json(resp))
+    .catch((error) => {
+      console.log(error.stack);
+      res.json({ error: 'Databases fetch error.' });
+    });
 });
 
 app.listen(800, '127.0.0.1', () => console.log('Address: 127.0.0.1:800'));
