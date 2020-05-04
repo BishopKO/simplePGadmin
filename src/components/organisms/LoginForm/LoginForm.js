@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import Input from 'components/molecules/Input/Input';
+import { connect } from 'react-redux';
 import { authenticate } from 'actions';
+import { saveUserAction } from 'actions';
 
 const StyledWrapper = styled.div`
   width: 200px;
@@ -29,18 +31,18 @@ const StyledButton = styled.button`
   font-size: 1.5rem;
 `;
 
-const LoginForm = () => {
-  const handleLogin = () => {
+const LoginForm = ({ saveUser }) => {
+  const handleCheckLogin = () => {
     const config = {};
     document.querySelectorAll('.LoginForm Input').forEach((item) => {
       config[item.name] = item.value;
     });
 
     authenticate(config).then((resp) => {
-      if (resp[0].usename === config.user) {
-        document.cookie = Object.values(config);
+      if ('error' in resp) {
+        alert('Login error');
       } else {
-        console.log(resp);
+        saveUser(config);
       }
     });
   };
@@ -52,12 +54,15 @@ const LoginForm = () => {
         <Input label="Password" name="password" type="password" />
         <Input label="Host" name="host" />
         <Input label="Database" name="database" />
-        <StyledButton type="button" onClick={handleLogin}>
+        <StyledButton type="button" onClick={handleCheckLogin}>
           Connect
         </StyledButton>
       </StyledForm>
     </StyledWrapper>
   );
 };
+const mapDispatchToProps = (dispatch) => ({
+  saveUser: (config) => dispatch(saveUserAction(config)),
+});
 
-export default LoginForm;
+export default connect(null, mapDispatchToProps)(LoginForm);

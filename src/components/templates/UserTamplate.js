@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import SidePanel from 'components/organisms/SidePanel/SidePanel';
+import MainViewTemplate from './MainViewTemplate';
 
 const StyledWrapper = styled.div`
   display: grid;
@@ -13,17 +14,13 @@ const StyledWrapper = styled.div`
   overflow: hidden;
 `;
 
-const TestUserView = styled.div`
-  width: 100%;
-  height: 100%;
-  background: lightgray;
-`;
-
-const UserTemplate = () => (
-  <StyledWrapper>
-    <SidePanel />
-    <TestUserView />
-  </StyledWrapper>
-);
+const UserTemplate = () => {
+  return (
+    <StyledWrapper>
+      <SidePanel saveUser={'saveuser'} />
+      <MainViewTemplate />
+    </StyledWrapper>
+  );
+};
 
 export default UserTemplate;
