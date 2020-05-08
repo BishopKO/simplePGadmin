@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Input from 'components/molecules/Input/Input';
 import { connect } from 'react-redux';
-import { authenticate, saveUserAction, removeUserAction } from 'actions';
+import { authenticateAction } from 'actions';
 
 const StyledWrapper = styled.div`
   width: 200px;
@@ -30,47 +30,31 @@ const StyledButton = styled.button`
   font-size: 1.5rem;
 `;
 
-const LoginForm = ({ saveUser, removeUser }) => {
-  const [loggedin, setLoggedin] = useState(false);
-
+const LoginForm = ({ authUser }) => {
   const handleCheckLogin = () => {
     const config = {};
     document.querySelectorAll('.LoginForm Input').forEach((item) => {
       config[item.name] = item.value;
     });
-
-    if (loggedin) {
-      setLoggedin(false);
-      removeUser();
-    } else {
-      authenticate(config).then((resp) => {
-        if ('error' in resp) {
-          alert('Login error');
-        } else {
-          saveUser(config);
-          setLoggedin(true);
-        }
-      });
-    }
+    authUser(config);
   };
 
   return (
     <StyledWrapper>
       <StyledForm className="LoginForm">
-        <Input label="Username" name="user" />
-        <Input label="Password" name="password" type="password" />
-        <Input label="Host" name="host" />
-        <Input label="Database" name="database" />
+        <Input label="Username" name="user" value="bishop" />
+        <Input label="Password" name="password" type="password" value="ghost14" />
+        <Input label="Host" name="host" value="127.0.0.1" />
+        <Input label="Database" name="database" value="users" />
         <StyledButton type="button" onClick={handleCheckLogin}>
-          {loggedin ? 'Disconnect' : 'Connect'}
+          Connect
         </StyledButton>
       </StyledForm>
     </StyledWrapper>
   );
 };
 const mapDispatchToProps = (dispatch) => ({
-  saveUser: (config) => dispatch(saveUserAction(config)),
-  removeUser: () => dispatch(removeUserAction()),
+  authUser: (config) => dispatch(authenticateAction(config)),
 });
 
 export default connect(null, mapDispatchToProps)(LoginForm);

@@ -1,5 +1,8 @@
-import { createStore } from 'redux';
-import myReducer from 'reducer';
+import { createStore, applyMiddleware, compose } from 'redux';
+import thunk from 'redux-thunk';
+import pgReducer from 'reducer';
 
-const store = createStore(myReducer);
+const composeEnhancers = compose;
+
+const store = createStore(pgReducer, composeEnhancers(applyMiddleware(thunk)));
 export default store;

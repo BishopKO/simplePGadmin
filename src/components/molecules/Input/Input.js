@@ -30,10 +30,10 @@ const StyledInput = styled.input`
   font-size: 1.4rem;
 `;
 
-const Input = ({ label, type, name }) => {
+const Input = ({ label, type, name, value }) => {
   return (
     <StyledWrapper label={label}>
-      <StyledInput type={type ? type : 'text'} name={name} />
+      <StyledInput type={type ? type : 'text'} name={name} value={value} />
     </StyledWrapper>
   );
 };

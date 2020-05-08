@@ -1,15 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 import TopMenu from 'components/organisms/TopMenu/TopMenu';
-import UserTemplate from './UserTamplate';
 
 const StyledWrapper = styled.div`
   display: grid;
   grid-template-rows: 30px 1fr;
 `;
 
-const MainViewTemplate = ({ children }) => {
+const MainWindowTemplate = ({ children }) => {
   return (
     <StyledWrapper>
       <TopMenu />
@@ -18,4 +16,4 @@ const MainViewTemplate = ({ children }) => {
   );
 };
 
-export default MainViewTemplate;
+export default MainWindowTemplate;

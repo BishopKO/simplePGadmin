@@ -1,42 +1,27 @@
-export const saveUserAction = (config) => {
-  return {
-    type: 'SAVE_USER',
-    payload: { config },
-  };
-};
+import axios from 'axios';
 
-export const removeUserAction = () => {
-  return {
-    type: 'REMOVE_USER',
-  };
-};
-
-export const authenticate = (config) => {
-  return new Promise((resolve) => {
-    fetch('http://127.0.0.1:800/login', {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(config),
+export const authenticateAction = (config) => (dispatch) => {
+  return axios
+    .post('http://127.0.0.1:800/login', {
+      config,
     })
-      .then((response) => response.json())
-      .then((resp) => resolve(resp))
-      .catch((error) => resolve(error));
-  });
+    .then((payload) => {
+      if ('error' in payload.data) {
+        dispatch({ type: 'AUTH_USER_FAIL' });
+      } else {
+        dispatch({ type: 'AUTH_USER_SUCCESS', payload: { config: config } });
+      }
+    })
+    .catch(() => dispatch({ type: 'AUTH_USER_ERROR', payload: 'error' }));
 };
 
-export const getDatabases = (config) => (dispatch) => {
-  fetch('http://127.0.0.1:800/databases', {
-    method: 'POST',
-    mode: 'cors',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(config),
-  })
-    .then((response) => response.json())
-    .then((resp) => dispatch({ type: 'DATABASES', payload: [1, 2, 3] }))
-    .catch((error) => dispatch({ type: 'ERROR' }));
+export const getDatabasesAction = (config) => {
+  return new Promise((resolve) => {
+    axios
+      .post('http://127.0.0.1:800/databases', {
+        config,
+      })
+      .then((payload) => resolve(payload.data))
+      .catch(() => resolve({ error: 'GET_DATABASES' }));
+  });
 };

@@ -6,22 +6,24 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+const queries = {
+  databases: 'select datname from pg_database',
+};
+
 app.post('/login', (req, res) => {
-  const config = req.body;
-  sendQuery
-    .sendQuery(config, 'select usename from pg_user where usename=$1', [config.user])
-    .then((resp) => res.json(resp))
-    .catch((err) => {
-      console.log(err.stack);
-      res.json({ error: 'Login error.' });
-    });
+  const config = req.body.config;
+  if (config) {
+    sendQuery.checkConfig(config).then((resp) => res.json(resp));
+  } else {
+    res.json({ error: 'Login error.' });
+  }
 });
 
 app.post('/databases', (req, res) => {
-  const config = req.body;
-  console.log(config);
+  const config = req.body.config;
+  console.log('Databases:', config);
   sendQuery
-    .sendQuery(config, 'select datname from pg_database')
+    .sendQuery(config, queries.databases)
     .then((resp) => res.json(resp))
     .catch((error) => {
       console.log(error.stack);

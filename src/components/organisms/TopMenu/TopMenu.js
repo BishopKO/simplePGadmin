@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom';
 
 const StyledNav = styled.nav`
   position: relative;
-  background: grey;
+  border-bottom: 1px solid black;
 `;
 
 const StyledList = styled.ul`
@@ -15,7 +15,6 @@ const StyledList = styled.ul`
   justify-content: flex-start;
   position: absolute;
   list-style: none;
-  background: grey;
   padding: 0;
   margin: 0;
 `;
