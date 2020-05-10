@@ -1,7 +1,7 @@
 const initState = {
   config: '',
+  configDatabase: 'login_db',
   loggedIn: false,
-  databases: [],
 };
 
 const myReducer = (state = initState, action) => {
@@ -12,11 +12,6 @@ const myReducer = (state = initState, action) => {
         ...state,
         ['config']: action.payload.config,
         ['loggedIn']: true,
-      };
-    case 'GET_DATABASES':
-      return {
-        ...state,
-        ['databases']: action.payload.databases,
       };
     default:
       return state;

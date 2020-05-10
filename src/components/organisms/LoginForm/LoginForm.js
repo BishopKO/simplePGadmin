@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Input from 'components/molecules/Input/Input';
+import Input from 'components/atoms/Input/Input';
 import { connect } from 'react-redux';
 import { authenticateAction } from 'actions';
 
@@ -30,12 +30,14 @@ const StyledButton = styled.button`
   font-size: 1.5rem;
 `;
 
-const LoginForm = ({ authUser }) => {
+const LoginForm = ({ configDatabase, authUser }) => {
   const handleCheckLogin = () => {
     const config = {};
     document.querySelectorAll('.LoginForm Input').forEach((item) => {
       config[item.name] = item.value;
     });
+
+    config.database = configDatabase;
     authUser(config);
   };
 
@@ -45,7 +47,6 @@ const LoginForm = ({ authUser }) => {
         <Input label="Username" name="user" value="bishop" />
         <Input label="Password" name="password" type="password" value="ghost14" />
         <Input label="Host" name="host" value="127.0.0.1" />
-        <Input label="Database" name="database" value="users" />
         <StyledButton type="button" onClick={handleCheckLogin}>
           Connect
         </StyledButton>
@@ -57,4 +58,9 @@ const mapDispatchToProps = (dispatch) => ({
   authUser: (config) => dispatch(authenticateAction(config)),
 });
 
-export default connect(null, mapDispatchToProps)(LoginForm);
+const mapStateToProps = (state) => {
+  const configDatabase = state.configDatabase;
+  return { configDatabase };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

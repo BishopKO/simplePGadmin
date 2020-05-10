@@ -8,14 +8,13 @@ import { connect } from 'react-redux';
 
 const StyledWrapper = styled.div`
   display: grid;
-  width: 600px;
-  height: 400px;
+  width: 800px;
+  height: 185px;
   grid-template-columns: 200px 1fr;
   grid-gap: 0;
   border-radius: 5px;
   border: 1px solid black;
   overflow: hidden;
-  transition: all 2s linear;
 `;
 
 const StyledShowHide = styled.div`
@@ -31,7 +30,6 @@ class UserTemplate extends Component {
   }
 
   render() {
-    const { children } = this.props;
     const loggedin = true;
 
     return (
@@ -39,7 +37,7 @@ class UserTemplate extends Component {
         <SidePanel />
         {loggedin && (
           <StyledShowHide className="ShowHide">
-            <MainWindowTemplate>{children}</MainWindowTemplate>
+            <MainWindowTemplate />
           </StyledShowHide>
         )}
       </StyledWrapper>

@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-export const authenticateAction = (config) => (dispatch) => {
+export const authenticateAction = (config, configDatabase) => (dispatch) => {
   return axios
     .post('http://127.0.0.1:800/login', {
+      configDatabase,
       config,
     })
     .then((payload) => {
@@ -21,7 +22,19 @@ export const getDatabasesAction = (config) => {
       .post('http://127.0.0.1:800/databases', {
         config,
       })
-      .then((payload) => resolve(payload.data))
-      .catch(() => resolve({ error: 'GET_DATABASES' }));
+      .then((databases) => resolve(databases))
+      .catch(() => resolve({ error: 'GET_DATABASES_ERROR' }));
+  });
+};
+
+export const getTablesAction = (config, database) => {
+  return new Promise((resolve) => {
+    axios
+      .post('http://127.0.0.1:800/tables', {
+        config,
+        database,
+      })
+      .then((tables) => resolve(tables))
+      .catch(() => resolve({ error: 'GET_DATABASES_ERROR' }));
   });
 };

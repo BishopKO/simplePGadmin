@@ -1,27 +1,20 @@
 import React from 'react';
 import store from 'store';
-import MainTemplate from 'components/templates/MainTemplate';
-import StatusView from './Status';
-import DatabasesView from './Databases';
-import TablesView from './Tables';
-import UsersView from './Users';
-import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
 import { Provider } from 'react-redux';
+import MainTemplate from 'templates/MainTemplate';
+import UserTemplate from 'templates/UserTamplate';
+import MainWindowTemplate from 'templates/MainWindowTemplate';
 
-const Root = () => (
-  <Provider store={store}>
-    <MainTemplate>
-      <BrowserRouter>
-        <Switch>
-          <Route exact path="/" component={StatusView} />
-          <Route path="/databases" component={DatabasesView} />
-          <Route path="/tables" component={TablesView} />
-          <Route path="/users" component={UsersView} />
-          <Route path="/status" component={StatusView} />
-        </Switch>
-      </BrowserRouter>
-    </MainTemplate>
-  </Provider>
-);
+const Root = () => {
+  return (
+    <Provider store={store}>
+      <MainTemplate>
+        <UserTemplate>
+          <MainWindowTemplate />
+        </UserTemplate>
+      </MainTemplate>
+    </Provider>
+  );
+};
 
 export default Root;

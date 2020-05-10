@@ -13,7 +13,7 @@ const StyledWrapper = styled.div`
     position: absolute;
     content: "${({ label }) => label}";
     background: white;
-    font-size: 1rem;
+    font-size: 0.8rem;
     height: 8px;
     padding: 0 2px 0 2px;
     top: -5px;

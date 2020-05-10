@@ -28,7 +28,7 @@ function sendQuery(config, query, params = []) {
           .query(query, params)
           .then((response) => {
             client.end();
-            resolve(response.rows.map((item) => item.datname));
+            resolve(response.rows);
           })
           .catch((error) => resolve(error.stack.split('\n')[0]));
       }
