@@ -16,36 +16,37 @@ const queries = {
 
 app.post('/login', (req, res) => {
   const config = req.body.config;
-  if (config) {
-    sendQuery.checkConfig(config).then((resp) => res.json(resp));
-  } else {
-    res.json({ error: 'Login error.' });
-  }
+  sendQuery.checkConfig(config).then((resp) => {
+    res.json(resp);
+  });
 });
 
 app.post('/databases', (req, res) => {
   const config = req.body.config;
   sendQuery
     .sendQuery(config, queries.databases)
-    .then((resp) => res.json(resp.map((item) => item.datname)))
+    .then((resp) => {
+      if (resp.error) {
+        throw Error(resp.error);
+      } else {
+        res.json(resp.data.map((item) => item.datname));
+      }
+    })
     .catch((error) => {
-      console.log(error.stack);
-      res.json({ error: 'Databases fetch error.' });
+      console.log({ error: 'Express /databases error.' });
     });
 });
 
 app.post('/tables', (req, res) => {
-  const config = req.body.config;
-  const database = req.body.database;
-
+  const { config } = req.body;
   sendQuery
-    .sendQuery(config, queries.tables, [database, 'public'])
+    .sendQuery(config, queries.tables, [config.database, 'public'])
     .then((resp) => {
-      res.json(resp.map((item) => item.table_name));
+      res.json(resp.data.map((item) => item.table_name));
     })
     .catch((error) => {
-      console.log(error.stack);
-      res.json({ error: 'Tables fetch error.' });
+      console.log(error.message);
+      res.json({ error: error.message });
     });
 });
 

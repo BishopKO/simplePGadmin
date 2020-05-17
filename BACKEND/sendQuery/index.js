@@ -16,21 +16,18 @@ function checkConfig(config) {
 }
 
 function sendQuery(config, query, params = []) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const client = new Client(config);
-
     client.connect((error) => {
       if (error) {
-        console.log('Client error: ', error.stack);
-        resolve({ error: 'Connection error' });
+        reject(new Error(error.message));
       } else {
         client
           .query(query, params)
           .then((response) => {
-            client.end();
-            resolve(response.rows);
+            resolve({ success: 'SendQuery Success', data: response.rows });
           })
-          .catch((error) => resolve(error.stack.split('\n')[0]));
+          .catch((error) => reject(error.message));
       }
     });
   });
