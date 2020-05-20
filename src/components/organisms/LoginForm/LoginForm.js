@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import Input from 'components/atoms/Input/Input';
 import { connect } from 'react-redux';
 import { authenticateAction } from 'actions';
 
 const StyledWrapper = styled.div`
-  width: 200px;
+  width: 100%;
   height: 300px;
   display: flex;
   flex-direction: column;
@@ -30,37 +30,45 @@ const StyledButton = styled.button`
   font-size: 1.5rem;
 `;
 
-const LoginForm = ({ configDatabase, authUser }) => {
-  const handleCheckLogin = () => {
-    const config = {};
+class LoginForm extends Component {
+  handleCheckLogin = () => {
+    const { config, authUser } = this.props;
+
     document.querySelectorAll('.LoginForm Input').forEach((item) => {
       config[item.name] = item.value;
     });
-
-    config.database = configDatabase;
     authUser(config);
   };
 
-  return (
-    <StyledWrapper>
-      <StyledForm className="LoginForm">
-        <Input label="Username" name="user" value="bishop" />
-        <Input label="Password" name="password" type="password" value="ghost14" />
-        <Input label="Host" name="host" value="127.0.0.1" />
-        <StyledButton type="button" onClick={handleCheckLogin}>
-          Connect
-        </StyledButton>
-      </StyledForm>
-    </StyledWrapper>
-  );
-};
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.loginCount < this.props.loginCount) {
+      alert('Login Fail!');
+    } else {
+    }
+  }
+
+  render() {
+    return (
+      <StyledWrapper>
+        <StyledForm className="LoginForm">
+          <Input label="Username" name="user" value="bishop" />
+          <Input label="Password" name="password" type="password" value="ghost14" />
+          <Input label="Host" name="host" value="127.0.0.1" />
+          <StyledButton type="button" onClick={this.handleCheckLogin}>
+            {this.props.loggedIn ? 'Disconnect' : 'Connect'}
+          </StyledButton>
+        </StyledForm>
+      </StyledWrapper>
+    );
+  }
+}
 const mapDispatchToProps = (dispatch) => ({
   authUser: (config) => dispatch(authenticateAction(config)),
 });
 
 const mapStateToProps = (state) => {
-  const configDatabase = state.configDatabase;
-  return { configDatabase };
+  const { config, loginCount, loggedIn } = state;
+  return { config, loginCount, loggedIn };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

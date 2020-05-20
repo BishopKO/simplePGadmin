@@ -1,73 +1,89 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
+import Button from 'components/atoms/Button/Button';
 import Modal from 'components/atoms/Modal/Modal';
-import BorderWithLabel from 'components/atoms/BorderWithLabel/BorderWithLabel';
-import withContext from 'hoc/withContext';
-import MainWindowTemplate from 'templates/MainWindowTemplate';
-import { NavLink } from 'react-router-dom';
+import { createDatabaseAction } from 'actions';
+import { useHistory } from 'react-router-dom';
+import { TweenMax } from 'gsap';
 
-const StyledInputWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-`;
+import { connect } from 'react-redux';
 
-const StyledInput = styled.input`
-  width: 200px;
-  height: 30px;
-`;
-
-const StyledCreateButton = styled.button`
-  width: 60px;
-  height: 30px;
-  padding: 0;
-  margin: 0;
-`;
-
-const StyledGrants = styled(BorderWithLabel)`
-  border: 1px solid black;
-  label {
-    font-size: 10px;
-  }
-`;
-
-const StyledTitlte = styled.p`
+const StyledTitle = styled.p`
   font-size: 12px;
   padding: 0;
   margin: 0;
 `;
 
-const DatabaseCreate = ({ match, context }) => {
-  const [showModal, setShowModal] = useState(true);
+const StyledInput = styled.input`
+  width: 200px;
+  height: 30px;
+  border: none;
+  border-bottom: 1px solid lightgray;
+  text-transform: lowercase;
 
-  useState(() => {
-    console.log(match.params.id);
-  });
+  :focus {
+    outline: none;
+    border: none;
+    border-bottom: 1px solid grey;
+  }
+
+  ::placeholder {
+    text-transform: none;
+    text-align: center;
+  }
+`;
+
+const StyledCreateButton = styled(Button)`
+  width: 60px;
+  height: 30px;
+  padding: 0;
+  margin: 0;
+  border-radius: 3px;
+  justify-self: flex-end;
+
+  :hover {
+    background-color: green;
+  }
+`;
+
+const DatabaseCreate = ({ config, createDatabase, loggedIn, show }) => {
+  let history = useHistory();
+
+  const handleCreateDatabase = () => {
+    // TODO: HANDLE CREATE DATABASE ERRORS
+    const name = document.querySelector('#databaseNameInput').value;
+    const testName = RegExp('^[a-z_]+$');
+    if (name.length > 0 && loggedIn && testName.test(name)) {
+      config.databaseName = name;
+      createDatabase(config);
+      history.push('/');
+    } else {
+      alert('Incorrect database name.');
+    }
+  };
 
   return (
-    <div>
-      {showModal && (
-        <Modal action={() => setShowModal(false)}>
-          <StyledTitlte>Create new database</StyledTitlte>
-          <StyledInputWrapper>
-            <div>
-              <StyledInput placeholder="Database name." />
-              <StyledCreateButton>Create</StyledCreateButton>
-            </div>
-          </StyledInputWrapper>
-          <StyledGrants label="Grants" width={'230px'}>
-            {context.grants.map((item) => (
-              <label>
-                <input key={item} id={item.toLocaleLowerCase()} type="checkbox" value={item} />
-                {item}
-              </label>
-            ))}
-          </StyledGrants>
+    <div className="dbCreateModal">
+      {show && (
+        <Modal action={() => history.push('/')}>
+          <StyledTitle>CREATE NEW DATABASE</StyledTitle>
+          <StyledInput id="databaseNameInput" placeholder="Database name." />
+          <StyledCreateButton bgColor={'grey'} onClick={handleCreateDatabase}>
+            Create
+          </StyledCreateButton>
         </Modal>
       )}
     </div>
   );
 };
 
-export default withContext(DatabaseCreate);
+const mapStateToProps = (state) => {
+  const { config, loggedIn } = state;
+  return { config, loggedIn };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  createDatabase: (config) => dispatch(createDatabaseAction(config)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DatabaseCreate);

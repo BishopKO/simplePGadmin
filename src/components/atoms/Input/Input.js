@@ -13,8 +13,10 @@ const StyledWrapper = styled.div`
     position: absolute;
     content: "${({ label }) => label}";
     background: white;
+    border-radius: 2px;
+    border:1px solid white;
     font-size: 0.8rem;
-    height: 8px;
+    height: 10px;
     padding: 0 2px 0 2px;
     top: -5px;
     left: 5px;
@@ -27,7 +29,7 @@ const StyledInput = styled.input`
   width: 100%;
   height: 100%;
   padding: 2px;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
 `;
 
 const Input = ({ label, type, name, value }) => {

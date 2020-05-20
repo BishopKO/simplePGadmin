@@ -11,7 +11,7 @@ const StyledGrants = styled(BorderWithLabel)`
   }
 `;
 
-const CreateTable = ({ context }) => {
+const TableCreate = ({ context }) => {
   return (
     <Modal>
       <StyledGrants label="Grants" width={'230px'}>
@@ -26,4 +26,4 @@ const CreateTable = ({ context }) => {
   );
 };
 
-export default withContext(CreateTable);
+export default withContext(TableCreate);

@@ -1,24 +1,19 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import SidePanel from 'components/organisms/SidePanel/SidePanel';
-import MainWindowTemplate from './MainWindowTemplate';
 
 import { TweenMax, Linear } from 'gsap';
 import { connect } from 'react-redux';
 
 const StyledWrapper = styled.div`
   display: grid;
-  width: 800px;
-  height: 185px;
-  grid-template-columns: 200px 1fr;
+  width: 700px;
+  height: 300px;
+  grid-template-columns: 170px 1fr;
   grid-gap: 0;
   border-radius: 5px;
-  border: 1px solid black;
+  border: ${({ theme }) => `3px solid ${theme.border}`};
   overflow: hidden;
-`;
-
-const StyledShowHide = styled.div`
-  position: relative;
 `;
 
 class UserTemplate extends Component {
@@ -30,16 +25,10 @@ class UserTemplate extends Component {
   }
 
   render() {
-    const loggedin = true;
-
     return (
       <StyledWrapper>
         <SidePanel />
-        {loggedin && (
-          <StyledShowHide className="ShowHide">
-            <MainWindowTemplate />
-          </StyledShowHide>
-        )}
+        {this.props.children}
       </StyledWrapper>
     );
   }

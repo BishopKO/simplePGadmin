@@ -8,6 +8,10 @@ app.use(cors());
 
 const queries = {
   databases: 'SELECT datname FROM pg_database',
+  create_database: 'CREATE DATABASE ',
+  drop_database: 'DROP DATABASE ',
+
+  rename_database: 'RENAME DATABASE $1 TO $2 ', //TODO: SYNTAX?
   tables:
     'SELECT table_name FROM information_schema.tables WHERE table_catalog=$1 AND table_schema=$2',
   table_info:
@@ -29,11 +33,58 @@ app.post('/databases', (req, res) => {
       if (resp.error) {
         throw Error(resp.error);
       } else {
-        res.json(resp.data.map((item) => item.datname));
+        res.json(resp.map((item) => item.datname));
       }
     })
     .catch((error) => {
-      console.log({ error: 'Express /databases error.' });
+      res.json({ error: error.message });
+    });
+});
+
+app.post('/create_database', (req, res) => {
+  const { user, password, host, database, databaseName } = req.body.config;
+  sendQuery
+    .sendQuery({ user, password, host, database }, queries.create_database + databaseName)
+    .then((resp) => {
+      if (resp.error) {
+        throw Error(resp.error);
+      } else {
+        res.json('Create database success.');
+      }
+    })
+    .catch((error) => {
+      res.json({ error: error });
+    });
+});
+
+app.post('/drop_database', (req, res) => {
+  const { user, password, host, database, databaseName } = req.body.config;
+  console.log({ user, password, host, database, databaseName });
+  sendQuery
+    .sendQuery({ user, password, host, database }, queries.drop_database + databaseName)
+    .then(() => {
+      res.json(databaseName);
+    })
+    .catch((error) => {
+      console.log(error);
+      res.json({ error: error });
+    });
+});
+
+app.post('/rename_database', (req, res) => {
+  const { user, password, host, database, databaseName } = req.body.config;
+  console.log({ user, password, host, database, databaseName });
+  sendQuery
+    .sendQuery(
+      { user, password, host, database },
+      'ALTER DATABASE ' + database + ' RENAME TO ' + databaseName,
+    )
+    .then(() => {
+      res.json(databaseName);
+    })
+    .catch((error) => {
+      console.log(error);
+      res.json({ error: error });
     });
 });
 
@@ -42,10 +93,9 @@ app.post('/tables', (req, res) => {
   sendQuery
     .sendQuery(config, queries.tables, [config.database, 'public'])
     .then((resp) => {
-      res.json(resp.data.map((item) => item.table_name));
+      res.json(resp.map((item) => item.table_name));
     })
     .catch((error) => {
-      console.log(error.message);
       res.json({ error: error.message });
     });
 });
@@ -53,15 +103,14 @@ app.post('/tables', (req, res) => {
 app.post('/table_info', (req, res) => {
   const config = req.body.config;
   const database = req.body.database;
-  const table = req.body.table;
+  const tableName = req.body.table;
 
   sendQuery
-    .sendQuery(config, queries.table_info, [table, database])
+    .sendQuery(config, queries.table_info, [tableName, database])
     .then((resp) => {
       res.json(resp);
     })
     .catch((error) => {
-      console.log(error.stack);
       res.json({ error: 'Tables fetch error.' });
     });
 });

@@ -18,16 +18,24 @@ function checkConfig(config) {
 function sendQuery(config, query, params = []) {
   return new Promise((resolve, reject) => {
     const client = new Client(config);
+
     client.connect((error) => {
       if (error) {
+        console.log(error.message);
+        client.end();
         reject(new Error(error.message));
       } else {
         client
           .query(query, params)
           .then((response) => {
-            resolve({ success: 'SendQuery Success', data: response.rows });
+            console.log(response.rows);
+            client.end();
+            resolve(response.rows);
           })
-          .catch((error) => reject(error.message));
+          .catch((error) => {
+            client.end();
+            reject(error.message);
+          });
       }
     });
   });

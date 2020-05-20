@@ -2,27 +2,29 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Modal from 'components/atoms/Modal/Modal';
 import Button from 'components/atoms/Button/Button';
+import { connect } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { dropDatabaseAction } from 'actions';
 
 const StyledWarning = styled.p`
-  font-size: 12px;
+  font-size: 1.5rem;
   padding: 0;
   margin: 0;
-  color: red;
-  text-transform: uppercase;
-`;
-
-const StyledInfo = styled.p`
-  display: flex;
-  margin-top: 10px;
-  font-size: 16px;
-  height: 100%;
-  span:nth-child(2) {
+  span {
     color: red;
+    text-decoration: underline;
   }
 `;
 
-const StyledButtonsWrapper = styled.div`
+const StyledQuestion = styled.div`
+  width: 100%;
   height: 100%;
+  font-size: 1.1rem;
+  text-align: center;
+`;
+
+const StyledButtonsWrapper = styled.div`
+  height: 30px;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -35,22 +37,34 @@ const StyledButton = styled(Button)`
   border-radius: 3px;
 `;
 
-const DatabaseDrop = ({ database }) => {
+const DatabaseDrop = ({ match, dropDatabase, config }) => {
   const [showModal, setShowModal] = useState(true);
+  const databaseName = match.params.name;
+
+  let history = useHistory();
+
+  const handleDropDatabase = () => {
+    config.database = 'login_db';
+    config.databaseName = databaseName;
+    dropDatabase(config);
+    history.push('/');
+  };
 
   return (
     <div>
       {showModal && (
         <Modal action={() => setShowModal(false)}>
-          <StyledWarning>DROP DATABASE</StyledWarning>
-          <StyledInfo>
-            <span>Delete database:</span> <span>{database}</span> <span>?</span>
-          </StyledInfo>
+          <StyledWarning>
+            DROP DATABASE <span>{databaseName}</span> !
+          </StyledWarning>
+          <StyledQuestion>Are You sure You want to delete database?</StyledQuestion>
           <StyledButtonsWrapper>
-            <StyledButton onClick={() => setShowModal(false)} color={'blue'}>
+            <StyledButton onClick={() => setShowModal(false)} color={'green'}>
               No
             </StyledButton>
-            <StyledButton color={'red'}>Yes</StyledButton>
+            <StyledButton color={'red'} onClick={handleDropDatabase}>
+              Yes
+            </StyledButton>
           </StyledButtonsWrapper>
         </Modal>
       )}
@@ -58,4 +72,13 @@ const DatabaseDrop = ({ database }) => {
   );
 };
 
-export default DatabaseDrop;
+const mapDispatchToProps = (dispatch) => ({
+  dropDatabase: (config) => dispatch(dropDatabaseAction(config)),
+});
+
+const mapStateToProps = (state) => {
+  const { config } = state;
+  return { config };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DatabaseDrop);

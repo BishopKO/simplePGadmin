@@ -10,10 +10,15 @@ const Button = styled.button`
   color: white;
   width: 100px;
   height: 100%;
-  background: ${({ theme }) => theme.fourth};
+  background: ${({ bgColor }) => bgColor};
   border: none;
-  border-right: 1px solid black;
-  border-bottom: 1px solid black;
+  border-radius: 3px;
+
+  :hover {
+    //transform: scale(1.05);
+    transition: all 0.3s;
+    cursor: pointer;
+  }
 
   &.active {
     background: white;
