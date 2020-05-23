@@ -1,34 +1,9 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
 import Input from 'components/atoms/Input/Input';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { authenticateAction } from 'actions';
-
-const StyledWrapper = styled.div`
-  width: 100%;
-  height: 300px;
-  display: flex;
-  flex-direction: column;
-  justify-items: center;
-  align-items: center;
-`;
-
-const StyledForm = styled.form`
-  width: 100%;
-  padding: 10px;
-  overflow: hidden;
-`;
-
-const StyledButton = styled.button`
-  width: 100%;
-  height: 35px;
-  margin-top: 10px;
-  background: ${({ theme }) => theme.first};
-  border: none;
-  border-radius: 5px;
-  color: white;
-  font-size: 1.5rem;
-`;
+import { StyledWrapper, StyledButton, StyledForm } from './loginFormStyles';
 
 class LoginForm extends Component {
   handleCheckLogin = () => {
@@ -38,16 +13,21 @@ class LoginForm extends Component {
       config[item.name] = item.value;
     });
     authUser(config);
+    console.log(config);
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.loginCount < this.props.loginCount) {
+    const { loginCount } = this.props;
+    console.log(loginCount);
+    if (prevProps.loginCount < loginCount) {
       alert('Login Fail!');
     } else {
+      console.log(this.props.config);
     }
   }
 
   render() {
+    const { loggedIn } = this.props;
     return (
       <StyledWrapper>
         <StyledForm className="LoginForm">
@@ -55,20 +35,33 @@ class LoginForm extends Component {
           <Input label="Password" name="password" type="password" value="ghost14" />
           <Input label="Host" name="host" value="127.0.0.1" />
           <StyledButton type="button" onClick={this.handleCheckLogin}>
-            {this.props.loggedIn ? 'Disconnect' : 'Connect'}
+            {loggedIn ? 'Disconnect' : 'Connect'}
           </StyledButton>
         </StyledForm>
       </StyledWrapper>
     );
   }
 }
+
+LoginForm.propTypes = {
+  config: PropTypes.object.isRequired,
+  authUser: PropTypes.func.isRequired,
+  loggedIn: PropTypes.bool.isRequired,
+  loginCount: PropTypes.number.isRequired,
+};
+
+LoginForm.defaultProps = {
+  loggedIn: false,
+  loginCount: 0,
+};
+
 const mapDispatchToProps = (dispatch) => ({
   authUser: (config) => dispatch(authenticateAction(config)),
 });
 
 const mapStateToProps = (state) => {
-  const { config, loginCount, loggedIn } = state;
-  return { config, loginCount, loggedIn };
+  const { config, loggedIn, loginCount } = state;
+  return { config, loggedIn, loginCount };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

@@ -8,8 +8,6 @@ const StyledWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  //border-right: 1px dotted blue;
-  //background: yellow;
 `;
 
 const SidePanel = () => (

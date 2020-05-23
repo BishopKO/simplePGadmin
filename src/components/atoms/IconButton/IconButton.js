@@ -5,10 +5,9 @@ const IconButton = styled.button`
   cursor: pointer;
   width: 10px;
   height: 10px;
-  background: white;
   background-image: url(${({ icon }) => icon});
-  background-size: 50%;
-  background-position: 50% 50%;
+  background-size: 100%;
+  background-position: 50% 50%%;
   background-repeat: no-repeat;
   border: none;
 `;

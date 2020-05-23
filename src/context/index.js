@@ -1,4 +1,22 @@
 import React from 'react';
 
-export const grants = { grants: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'] };
-export const PageContext = React.createContext({ grants: grants });
+const sqlParams = {
+  grants: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
+  types: [
+    'serial',
+    'integer',
+    'decimal',
+    'numeric',
+    'money',
+    'varchar',
+    'char',
+    'text',
+    'time',
+    'date',
+    'timestamp',
+    'bool',
+  ],
+};
+
+export const PageContext = React.createContext(sqlParams);
+export default PageContext;

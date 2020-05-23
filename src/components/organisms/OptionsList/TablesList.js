@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import goIcon from 'assets/goIcon.svg';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -10,26 +11,23 @@ import {
   StyledList,
   StyledMenuWrapper,
   StyledBorder,
-} from './StyledTables';
+} from './optionsListStyles';
 
-class DatabasesList extends Component {
-  constructor({ options, label }) {
-    super();
+class TablesList extends Component {
+  constructor(props) {
+    super(props);
     this.state = {
       activeOption: 'tblCreate',
       activeElement: '',
-      options,
-      label,
     };
     this.createPathname = this.createPathname.bind(this);
   }
 
   createPathname() {
     const { activeOption, activeElement } = this.state;
-    console.log(activeOption, activeElement);
     switch (activeOption) {
       case 'tblCreate':
-        return '/tblCreate/';
+        return '/tblCreate';
       case 'tblInsert':
         return '/tblInsert/' + activeElement;
       case 'tblRename':
@@ -46,13 +44,13 @@ class DatabasesList extends Component {
   }
 
   render() {
-    const { tables } = this.props;
+    const { options, tables, label } = this.props;
     return (
-      <StyledBorder label={this.state.label}>
+      <StyledBorder label={label}>
         <StyledWrapper>
           <StyledMenuWrapper>
             <StyledSelect className="options">
-              {this.state.options.map((item, index) => (
+              {options.map((item, index) => (
                 <option
                   key={this.createKey(item, index)}
                   value={item.value}
@@ -82,9 +80,21 @@ class DatabasesList extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const { loggedIn, tables } = state;
-  return { loggedIn, tables };
+TablesList.propTypes = {
+  options: PropTypes.array.isRequired,
+  tables: PropTypes.array.isRequired,
+  label: PropTypes.string.isRequired,
+  config: PropTypes.object.isRequired,
 };
 
-export default connect(mapStateToProps)(DatabasesList);
+TablesList.dedaultProps = {
+  options: [],
+  tables: [],
+};
+
+const mapStateToProps = (state) => {
+  const { tables, config } = state;
+  return { tables, config };
+};
+
+export default connect(mapStateToProps)(TablesList);

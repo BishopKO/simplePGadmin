@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const StyledWrapper = styled.div`
   position: relative;
@@ -32,12 +33,24 @@ const StyledInput = styled.input`
   font-size: 1.2rem;
 `;
 
-const Input = ({ label, type, name, value }) => {
+//TODO: REMOVE FIXED FIELDS VALUE
+const Input = ({ label, type, value, name }) => {
   return (
     <StyledWrapper label={label}>
-      <StyledInput type={type ? type : 'text'} name={name} value={value} />
+      <StyledInput type={type ? type : 'text'} value={value} name={name} />
     </StyledWrapper>
   );
+};
+
+Input.propTypes = {
+  label: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+};
+
+Input.defaultProps = {
+  label: 'Default label',
+  name: 'Default name',
 };
 
 export default Input;

@@ -52,7 +52,7 @@ class MainWindowTemplate extends Component {
     return (
       <StyledWrapper>
         {children}
-        <PageContext.Provider value={grants}>
+        <PageContext.Provider>
           <DatabasesList options={optionsDbs} label="Databases" />
           <TablesList options={optionsTbl} label="Tables" />
         </PageContext.Provider>

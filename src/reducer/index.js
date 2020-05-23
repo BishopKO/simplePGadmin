@@ -1,23 +1,20 @@
 const initState = {
-  config: { user: '', password: '', host: '', database: 'login_db' },
+  config: { user: '', password: '', host: '', database: 'postgres', currentDb: '' },
   loggedIn: false,
   loginCount: 0,
   databases: [],
   tables: [],
-
-  grants: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
   errors: [],
 };
 
 const myReducer = (state = initState, action) => {
-  console.log('REDUCER: ', action);
+  console.log('REDUCER: ', action, 'STATE: ', state.config);
   switch (action.type) {
     case 'AUTH_USER_SUCCESS':
       return {
         ...state,
         config: action.payload.config,
         loggedIn: true,
-        loginCount: 0,
       };
     case 'AUTH_USER_FAIL':
       return {
@@ -42,14 +39,22 @@ const myReducer = (state = initState, action) => {
     case 'GET_TABLES_ERROR':
       return {
         ...state,
-        errors: action.payload,
+        errors: state.errors.concat(['Get tables error']),
       };
     case 'CREATE_DATABASE_SUCCESS':
       return {
         ...state,
-        databases: state.databases.concat(action.payload.toLocaleLowerCase()),
       };
     case 'CREATE_DATABASE_ERROR':
+      return {
+        ...state,
+        error: state.errors.concat(['Create database error']),
+      };
+    case 'RENAME_DATABASE_SUCCESS':
+      return {
+        ...state,
+      };
+    case 'RENAME_DATABASE_ERROR':
       return {
         ...state,
         error: state.errors.concat('Create database error'),

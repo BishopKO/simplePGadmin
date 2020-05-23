@@ -69,7 +69,7 @@ export const renameDatabaseAction = (config) => (dispatch) => {
       if (resp.data.error) {
         throw Error(resp.data.error);
       } else {
-        dispatch({ type: 'RENAME_DATABASE_SUCCESS', payload: config.databaseName });
+        dispatch({ type: 'RENAME_DATABASE_SUCCESS' });
       }
     })
     .catch((error) => dispatch({ type: 'RENAME_DATABASE_ERROR', payload: error.message }));

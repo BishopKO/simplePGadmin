@@ -1,24 +1,60 @@
-import React, { Component, useEffect } from 'react';
-import styled from 'styled-components';
-import Modal from 'components/atoms/Modal/Modal';
-import BorderWithLabel from 'components/atoms/BorderWithLabel/BorderWithLabel';
+import React from 'react';
 import withContext from 'hoc/withContext';
-
-const StyledGrants = styled(BorderWithLabel)`
-  border: 1px solid black;
-  label {
-    font-size: 10px;
-  }
-`;
+import BorderWithLabel from 'components/atoms/BorderWithLabel/BorderWithLabel';
+import goIcon from 'assets/goIcon.svg';
+import {
+  StyledPK,
+  StyledInput,
+  StyledBorderName,
+  StyledBorderOptions,
+  StyledBorderWidth,
+  StyledAddColumn,
+  StyledSelect,
+  StyledInputCheckbox,
+  StyledGrants,
+} from './tableCreateStyles';
+import Modal from 'components/atoms/Modal/Modal';
 
 const TableCreate = ({ context }) => {
+  const { grants, types } = context;
+
+  const createKey = (value, index) => {
+    return `${index}_${value}`;
+  };
+
   return (
-    <Modal>
+    <Modal createTable>
+      <StyledAddColumn label="Add +">
+        <StyledBorderName label="name">
+          <StyledInput id="tableName" />
+        </StyledBorderName>
+        <StyledBorderOptions label="type">
+          <StyledSelect>
+            {types.map((item, index) => (
+              <option key={createKey(item, index)} value={item}>
+                {item}
+              </option>
+            ))}
+          </StyledSelect>
+        </StyledBorderOptions>
+        <StyledBorderWidth label="width">
+          <StyledInput id="tableName" />
+        </StyledBorderWidth>
+        <StyledPK label="pk">
+          <StyledInputCheckbox type="checkbox" />
+        </StyledPK>
+      </StyledAddColumn>
+
       <StyledGrants label="Grants" width={'230px'}>
-        {context.grants.map((item) => (
-          <label>
+        {grants.map((item, index) => (
+          <label key={createKey(item, index)}>
             {item}
-            <input id={item.toLocaleLowerCase()} type="checkbox" value={item} />
+            <input
+              key={createKey(item, index)}
+              id={item.toLocaleLowerCase()}
+              type="checkbox"
+              value={item}
+            />
           </label>
         ))}
       </StyledGrants>

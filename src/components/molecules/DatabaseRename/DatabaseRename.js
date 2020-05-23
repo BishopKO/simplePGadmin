@@ -1,94 +1,55 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import Button from 'components/atoms/Button/Button';
+import React from 'react';
 import Modal from 'components/atoms/Modal/Modal';
+import { StyledCreateButton, StyledTitle, StyledInput } from './databaseRenameStyles';
 import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { renameDatabaseAction } from 'actions';
+import { getDatabasesAction, renameDatabaseAction } from 'actions';
+import PropTypes from 'prop-types';
 
-const StyledTitle = styled.p`
-  font-size: 12px;
-  padding: 0;
-  margin: 0;
-
-  span {
-    color: green;
-  }
-`;
-
-const StyledInput = styled.input`
-  width: 200px;
-  height: 30px;
-  border: none;
-  border-bottom: 1px solid lightgray;
-
-  :focus {
-    outline: none;
-    border: none;
-    border-bottom: 1px solid grey;
-  }
-
-  ::placeholder {
-    text-align: center;
-  }
-`;
-
-const StyledCreateButton = styled(Button)`
-  width: 60px;
-  height: 30px;
-  padding: 0;
-  margin: 0;
-  border-radius: 3px;
-  justify-self: flex-end;
-
-  :hover {
-    background-color: green;
-  }
-`;
-
-const DatabaseRename = ({ match, renameDatabase, config }) => {
-  const [showModal, setShowModal] = useState(true);
+const DatabaseRename = ({ match, config, renameDatabase, getDatabases }) => {
   const databaseName = match.params.name;
 
   let history = useHistory();
 
   const handleRename = () => {
     const renameInput = document.querySelector('#renameInput').value;
+    console.log('Config', config);
 
-    // config.database = 'log;
-    config.databaseNameOld = this.props.match.database;
-    config.databaseNameNew = renameDatabase(config);
-    history.push('/');
+    config.databaseNameOld = databaseName;
+    config.databaseNameNew = renameInput;
+    renameDatabase(config)
+      .then(() => getDatabases(config))
+      .then(() => history.push('/'));
   };
 
-  // TODO: ADD SOURCE DATABASE TO PROPS ADD REDUER ACTION
-
   return (
-    <div>
-      {showModal && (
-        <Modal action={() => setShowModal(false)}>
-          <StyledTitle>
-            RENAME DATABASE <span>{databaseName}</span> TO:
-          </StyledTitle>
-          <StyledInput id="renameInput" placeholder="Database name." />
-          <StyledCreateButton bgColor={'grey'} onClick={handleRename}>
-            Save
-          </StyledCreateButton>
-        </Modal>
-      )}
-    </div>
+    <Modal>
+      <StyledTitle>
+        RENAME DATABASE <span>{databaseName}</span> TO:
+      </StyledTitle>
+      <StyledInput id="renameInput" placeholder="Database name." />
+      <StyledCreateButton bgColor={'grey'} onClick={handleRename}>
+        Save
+      </StyledCreateButton>
+    </Modal>
   );
 };
 
-// TODO: ADD mapDispatchToProps from rename database action
+DatabaseRename.propTypes = {
+  match: PropTypes.object.isRequired,
+  config: PropTypes.object.isRequired,
+  renameDatabase: PropTypes.func.isRequired,
+  getDatabases: PropTypes.func.isRequired,
+};
 
 const mapStateToProps = (state) => {
   const { config } = state;
   return { config };
 };
 
-const mapDispatchToProsp = (dispatch) => ({
+const mapDispatchToProps = (dispatch) => ({
   renameDatabase: (config) => dispatch(renameDatabaseAction(config)),
+  getDatabases: (config) => dispatch(getDatabasesAction(config)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProsp)(DatabaseRename);
+export default connect(mapStateToProps, mapDispatchToProps)(DatabaseRename);

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import goIcon from 'assets/goIcon.svg';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getTablesAction } from 'actions';
 import { Link } from 'react-router-dom';
@@ -11,14 +12,12 @@ import {
   StyledSelect,
   StyledGoButton,
   StyledWrapper,
-} from './StyledDatabases';
+} from './optionsListStyles';
 
 class DatabasesList extends Component {
-  constructor({ getDatabaseTables, config }) {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      getDatabaseTables,
-      config,
       activeElement: null,
       activeOption: 'dbCreate',
     };
@@ -40,8 +39,8 @@ class DatabasesList extends Component {
     }
   }
 
-  createKey(value, index) {
-    return `${index}_${value}`;
+  createKey(item, index) {
+    return `${index}_${item}`;
   }
 
   componentDidUpdate() {
@@ -52,9 +51,11 @@ class DatabasesList extends Component {
   }
 
   handleGetTablesOnClick(element) {
-    const config = this.state.config;
-    config.database = element;
-    this.state.getDatabaseTables(config);
+    let config = this.props.config;
+    const getDatabaseTables = this.props.getDatabaseTables;
+
+    config.currentDb = element;
+    getDatabaseTables(config);
     this.setState({ activeElement: element });
   }
 
@@ -94,9 +95,23 @@ class DatabasesList extends Component {
   }
 }
 
+DatabasesList.propTypes = {
+  config: PropTypes.object.isRequired,
+  getDatabaseTables: PropTypes.func.isRequired,
+  databases: PropTypes.array.isRequired,
+  options: PropTypes.array.isRequired,
+  label: PropTypes.string.isRequired,
+};
+
+DatabasesList.defaultProps = {
+  options: [],
+  databases: [],
+  label: 'Default label',
+};
+
 const mapStateToProps = (state) => {
-  const { config, loggedIn, databases } = state;
-  return { config, loggedIn, databases };
+  const { config, databases } = state;
+  return { config, databases };
 };
 
 const mapDispatchToProps = (dispatch) => ({
