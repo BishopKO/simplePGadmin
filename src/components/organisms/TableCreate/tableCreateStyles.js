@@ -1,26 +1,69 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import BorderWithLabel from 'components/atoms/BorderWithLabel/BorderWithLabel';
 import IconButton from 'components/atoms/IconButton/IconButton';
 
 export const StyledAddColumn = styled(BorderWithLabel)`
-  width: 350px;
-  height: 45px;
+  width: 420px;
+  height: 37px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   padding: 5px;
   border: 1px solid lightgrey;
+  margin-top: 5px;
 
   ::after {
     font-size: 8px;
     top: -5px;
     left: 120px;
+    display: none;
   }
 `;
 
-export const StyledPK = styled(BorderWithLabel)`
+export const StyledBorderName = styled(BorderWithLabel)`
+  width: 180px;
+  height: 20px;
+  border: 0.5px solid lightgrey;
+  ::after {
+    font-size: 8px;
+    top: -8px;
+    left: 2px;
+  }
+`;
+
+export const StyledBorderType = styled(BorderWithLabel)`
+  border: 0.5px solid lightgrey;
+  width: 70px;
+  height: 20px;
+  ::after {
+    font-size: 8px;
+    top: -8px;
+    left: 2px;
+  }
+`;
+
+export const StyledBorderWidth = styled(BorderWithLabel)`
+  width: 40px;
+  height: 20px;
+  border: 0.5px solid lightgrey;
+
+  ::after {
+    font-size: 8px;
+    top: -8px;
+    left: 2px;
+  }
+
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      pointer-events: none;
+      color: grey;
+    `};
+`;
+
+export const StyledBorderPK = styled(BorderWithLabel)`
   width: 20px;
-  height: 22px;
+  height: 20px;
   border: 0.5px solid lightgrey;
   ::after {
     top: -8px;
@@ -28,54 +71,6 @@ export const StyledPK = styled(BorderWithLabel)`
     font-size: 8px;
     background-color: white;
   }
-`;
-
-export const StyledBorderName = styled(BorderWithLabel)`
-  width: 180px;
-  height: 22px;
-  border: 0.5px solid lightgrey;
-  ::after {
-    font-size: 8px;
-    top: -8px;
-  }
-`;
-
-export const StyledBorderWidth = styled(BorderWithLabel)`
-  width: 40px;
-  height: 22px;
-  border: 0.5px solid lightgrey;
-  ::after {
-    font-size: 8px;
-    top: -8px;
-  }
-`;
-
-export const StyledBorderOptions = styled(BorderWithLabel)`
-  border: 0.5px solid lightgrey;
-  width: 70px;
-  height: 22px;
-  ::after {
-    font-size: 8px;
-    top: -8px;
-  }
-`;
-
-export const StyledInput = styled.input`
-  border: none;
-  width: 98%;
-  background-color: hsl(200, 20%, 95%);
-  border-radius: 3px;
-`;
-
-export const StyledInputCheckbox = styled.input`
-  border: none;
-  border-bottom: 1px solid grey;
-`;
-
-// TODO: CHANGE ADD ICON
-export const StyledAddButton = styled(IconButton)`
-  width: 20px;
-  height: 20px;
 `;
 
 export const StyledSelect = styled.select`
@@ -99,9 +94,38 @@ export const StyledSelect = styled.select`
   }
 `;
 
+export const StyledInputCheckbox = styled.input`
+  border: none;
+  border-bottom: 1px solid grey;
+`;
+
+export const StyledInput = styled.input`
+  border: none;
+  width: 98%;
+  background-color: hsl(200, 20%, 95%);
+  border-radius: 3px;
+`;
+
+export const StyledButtonsWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+`;
+
+export const StyledIconButton = styled(IconButton)`
+  width: 20px;
+  height: 20px;
+`;
+
 export const StyledGrants = styled(BorderWithLabel)`
-  border: 1px solid black;
+  border: 0.5px solid black;
+  margin-bottom: 5px;
   label {
     font-size: 10px;
+  }
+
+  ::after {
+    top: -8px;
   }
 `;
