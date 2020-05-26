@@ -89,3 +89,7 @@ export const getTablesAction = (config) => (dispatch) => {
     })
     .catch((error) => dispatch({ type: 'GET_TABLES_ERROR', payload: error.message }));
 };
+
+export const setTablePrimaryKeyAction = (colNumber) => (dispatch) => {
+  dispatch({ type: 'SET_PRIMARY_KEY', payload: colNumber });
+};

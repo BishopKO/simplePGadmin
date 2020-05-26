@@ -5,6 +5,7 @@ const initState = {
   databases: [],
   tables: [],
   errors: [],
+  createTable: { primaryKeyColumn: -1 },
 };
 
 const myReducer = (state = initState, action) => {
@@ -68,6 +69,12 @@ const myReducer = (state = initState, action) => {
       return {
         ...state,
         error: state.errors.concat([action.payload]),
+      };
+    case 'SET_PRIMARY_KEY':
+      const newPrimaryKey = { primaryKeyColumn: action.payload };
+      return {
+        ...state,
+        createTable: newPrimaryKey,
       };
 
     default:

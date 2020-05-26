@@ -1,145 +1,88 @@
-// TODO: WHEN FINISHED SPLIT INTO SEPARATE COMPONENTS, ADD PROP-TYPES
-
-import React, { Component, createRef } from 'react';
+import React, { Component } from 'react';
 import withContext from 'hoc/withContext';
+import PropTypes from 'prop-types';
+
 import addIcon from 'assets/addIcon.svg';
 import trashIcon from 'assets/trashIcon.svg';
+import saveIcon from 'assets/saveIcon.svg';
+import setGrantsIcon from 'assets/setGrantsIcon.svg';
 import Modal from 'components/atoms/Modal/Modal';
-import {
-  StyledBorderPK,
-  StyledInput,
-  StyledBorderName,
-  StyledBorderType,
-  StyledBorderWidth,
-  StyledAddColumn,
-  StyledSelect,
-  StyledInputCheckbox,
-  StyledGrants,
-  StyledButtonsWrapper,
-  StyledIconButton,
-} from './tableCreateStyles';
-
-class CreateColumns extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      nameValue: null,
-      widthValue: 0,
-      primaryKeyValue: false,
-      typeValue: 'VARCHAR',
-      created: false,
-    };
-  }
-
-  createKey = (value, index) => {
-    return `${index}_${value}`;
-  };
-
-  render() {
-    const { types, value } = this.props;
-
-    return (
-      <StyledAddColumn>
-        <StyledBorderName label="name">
-          <StyledInput
-            value={value}
-            onChange={(el) => this.setState({ nameValue: el.target.value })}
-          />
-        </StyledBorderName>
-        <StyledBorderType label="type">
-          <StyledSelect>
-            {types.map((item, index) => (
-              <option
-                key={this.createKey(item, index)}
-                value={item}
-                onClick={(element) => this.setState({ type: element.target.value })}
-              >
-                {item}
-              </option>
-            ))}
-          </StyledSelect>
-        </StyledBorderType>
-        <StyledBorderWidth
-          label="width"
-          disabled={this.state.typeValue !== 'VARCHAR' && this.state.typeValue !== 'CHAR'}
-        >
-          <StyledInput />
-        </StyledBorderWidth>
-        <StyledBorderPK label="pk">
-          <StyledInputCheckbox type="checkbox" />
-        </StyledBorderPK>
-      </StyledAddColumn>
-    );
-  }
-}
-
-const SetGrants = ({ grants }) => {
-  const createKey = (value, index) => {
-    return `${index}_${value}`;
-  };
-
-  return (
-    <StyledGrants label="Grants" width={'230px'}>
-      {grants.map((item, index) => (
-        <label key={createKey(item, index)}>
-          {item}
-          <input
-            key={createKey(item, index)}
-            id={item.toLocaleLowerCase()}
-            type="checkbox"
-            value={item}
-          />
-        </label>
-      ))}
-    </StyledGrants>
-  );
-};
+import Column from './Column';
+import TableGrants from './TableGrants';
+import { StyledButtonsWrapper, StyledIconButton } from './tableCreateStyles';
 
 class TableCreate extends Component {
   constructor(props) {
     super(props);
     this.state = {
       columns: 0,
+      columnsRefs: [],
+      grantsRef: React.createRef(null),
+      showGrants: true,
     };
     this.handleCreateNewColumn = this.handleCreateNewColumn.bind(this);
     this.handleRemoveColumns = this.handleRemoveColumns.bind(this);
-    this.columnsRef = Array(this.state.columns.length).fill(createRef());
+    this.handleSaveTable = this.handleSaveTable.bind(this);
   }
 
   handleCreateNewColumn() {
-    this.setState({ columns: this.state.columns + 1 });
+    this.setState({
+      columns: this.state.columns + 1,
+      columnsRefs: new Array(this.state.columns + 1).fill(React.createRef()),
+    });
   }
 
   handleRemoveColumns() {
     this.setState({ columns: 0 });
   }
 
+  handleSaveTable = () => {
+    this.state.columnsRefs.forEach((item) => {
+      console.log(item.state);
+    });
+
+    console.log(this.state.grantsRef.current.state);
+  };
+
   createKey = (value, index) => {
     return `${index}_${value}`;
   };
 
   render() {
-    const { grants, types } = this.props.context;
+    const { types } = this.props.context;
     return (
       <Modal createTable>
-        <SetGrants grants={grants} />
         <StyledButtonsWrapper>
-          <StyledIconButton icon={addIcon} onClick={this.handleCreateNewColumn} />
-          <StyledIconButton icon={trashIcon} onClick={this.handleRemoveColumns} />
+          <StyledIconButton label="Add" icon={addIcon} onClick={this.handleCreateNewColumn} />
+          <StyledIconButton label="Reset" icon={trashIcon} onClick={this.handleRemoveColumns} />
+          <StyledIconButton
+            label="Grants"
+            icon={setGrantsIcon}
+            onClick={() => this.setState({ showGrants: !this.state.showGrants })}
+          />
+          <StyledIconButton label="Save" icon={saveIcon} onClick={this.handleSaveTable} />
         </StyledButtonsWrapper>
 
         {Array(this.state.columns)
           .fill(null)
           .map((item, index) => (
-            <CreateColumns
+            <Column
+              ref={(element) => (this.state.columnsRefs[index] = element)}
+              colNumber={index}
               key={this.createKey('column', index)}
               types={types}
-              ref={(column) => (this.columnsRef[index] = column)}
             />
           ))}
+        {this.state.showGrants && (
+          <TableGrants ref={this.state.grantsRef} grants={this.props.context.grants} />
+        )}
       </Modal>
     );
   }
 }
+
+TableCreate.propTypes = {
+  types: PropTypes.object,
+};
 
 export default withContext(TableCreate);

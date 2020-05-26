@@ -37,7 +37,7 @@ const StyledInput = styled.input`
 const Input = ({ label, type, value, name }) => {
   return (
     <StyledWrapper label={label}>
-      <StyledInput type={type ? type : 'text'} value={value} name={name} />
+      <StyledInput type={type} value={value} name={name} />
     </StyledWrapper>
   );
 };

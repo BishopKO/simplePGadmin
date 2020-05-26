@@ -107,20 +107,37 @@ export const StyledInput = styled.input`
 `;
 
 export const StyledButtonsWrapper = styled.div`
-  width: 100%;
+  width: 40%;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
 `;
 
 export const StyledIconButton = styled(IconButton)`
+  position: relative;
   width: 20px;
   height: 20px;
+  ::after {
+    width: 30px;
+    position: absolute;
+    content: "${({ label }) => label}";
+    right: 0;
+    bottom: -15px;
+    left: -4px;
+    font-size: 10px;
+    border-radius: 3px;
+    background-color: hsl(160, 20%, 90%);
+  }
+  
+  :hover::after{
+    background-color: hsl(140, 60%, 70%);
+  }
 `;
 
 export const StyledGrants = styled(BorderWithLabel)`
   border: 0.5px solid black;
-  margin-bottom: 5px;
+  margin-top: 25px;
   label {
     font-size: 10px;
   }

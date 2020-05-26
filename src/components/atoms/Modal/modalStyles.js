@@ -23,10 +23,10 @@ export const StyledModal = styled.div`
     css`
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
-      width: 400px;
-      min-height: 200px;
+      width: 450px;
+      min-height: 50px;
     `}
 `;
 

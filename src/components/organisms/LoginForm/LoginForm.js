@@ -16,6 +16,12 @@ class LoginForm extends Component {
     console.log(config);
   };
 
+  componentDidMount() {
+    const { authUser } = this.props;
+    const config = { user: 'bishop', password: 'ghost14', database: 'postgres', host: '127.0.0.1' };
+    authUser(config);
+  }
+
   componentDidUpdate(prevProps, prevState, snapshot) {
     const { loginCount } = this.props;
     console.log(loginCount);
@@ -31,9 +37,9 @@ class LoginForm extends Component {
     return (
       <StyledWrapper>
         <StyledForm className="LoginForm">
-          <Input label="Username" name="user" value="bishop" />
-          <Input label="Password" name="password" type="password" value="ghost14" />
-          <Input label="Host" name="host" value="127.0.0.1" />
+          <Input label="Username" name="user" type="text" />
+          <Input label="Password" name="password" type="password" />
+          <Input label="Host" name="host" type="text" />
           <StyledButton type="button" onClick={this.handleCheckLogin}>
             {loggedIn ? 'Disconnect' : 'Connect'}
           </StyledButton>

@@ -6,7 +6,7 @@ import MainWindowTemplate from 'templates/MainWindowTemplate';
 import DatabaseCreate from 'components/molecules/DatabaseCreate/DatabaseCreate';
 import DatabaseRename from 'components/molecules/DatabaseRename/DatabaseRename';
 import DatabaseDrop from 'components/molecules/DatabaseDrop/DatabaseDrop';
-import TableCreate from 'components/molecules/TableCreate/TableCreate';
+import TableCreate from 'components/organisms/TableCreate/TableCreate';
 
 import { Provider } from 'react-redux';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
