@@ -15,8 +15,8 @@ const DatabaseRename = ({ match, config, renameDatabase, getDatabases }) => {
     const renameInput = document.querySelector('#renameInput').value;
     console.log('Config', config);
 
-    config.databaseNameOld = databaseName;
-    config.databaseNameNew = renameInput;
+    config.currentDb = databaseName;
+    config.newDbName = renameInput;
     renameDatabase(config)
       .then(() => getDatabases(config))
       .then(() => history.push('/'));

@@ -1,9 +1,7 @@
-import React, { Component, forwardRef } from 'react';
-import { connect } from 'react-redux';
-import { setTablePrimaryKeyAction } from 'actions';
+import React, { Component } from 'react';
 import {
   StyledAddColumn,
-  StyledBorderName,
+  StyledBorderColumnName,
   StyledBorderPK,
   StyledBorderType,
   StyledBorderWidth,
@@ -16,10 +14,8 @@ class Column extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      colNumber: this.props.colNumber,
       nameValue: null,
       widthValue: 0,
-      primaryKeyValue: false,
       typeValue: 'SERIAL',
     };
   }
@@ -28,38 +24,14 @@ class Column extends Component {
     return `${index}_${value}`;
   };
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const { primaryKeyColumn } = this.props;
-    switch (primaryKeyColumn !== prevProps.primaryKeyColumn) {
-      case true:
-        if (primaryKeyColumn === this.state.colNumber) this.setState({ primaryKeyValue: true });
-        if (primaryKeyColumn !== this.state.colNumber) this.setState({ primaryKeyValue: false });
-        break;
-      default:
-        break;
-    }
-  }
-
-  handleSetPrimaryKey = () => {
-    const { primaryKeyColumn, setPrimaryKey } = this.props;
-    if (primaryKeyColumn === this.state.colNumber) {
-      setPrimaryKey(-1);
-    } else {
-      setPrimaryKey(this.state.colNumber);
-    }
-  };
-
   render() {
-    const { types, value, primaryKeyColumn } = this.props;
+    const { colNumber, types, isPrimaryKey, setPrimaryKey } = this.props;
 
     return (
       <StyledAddColumn>
-        <StyledBorderName label="name">
-          <StyledInput
-            value={value}
-            onChange={(el) => this.setState({ nameValue: el.target.value })}
-          />
-        </StyledBorderName>
+        <StyledBorderColumnName label="Column name">
+          <StyledInput onChange={(el) => this.setState({ nameValue: el.target.value })} />
+        </StyledBorderColumnName>
         <StyledBorderType label="type">
           <StyledSelect>
             {types.map((item, index) => (
@@ -83,8 +55,10 @@ class Column extends Component {
         <StyledBorderPK label="pk">
           <StyledInputCheckbox
             type="checkbox"
-            onClick={this.handleSetPrimaryKey}
-            checked={this.state.colNumber === primaryKeyColumn}
+            onClick={() => {
+              setPrimaryKey(colNumber);
+            }}
+            checked={isPrimaryKey}
           />
         </StyledBorderPK>
       </StyledAddColumn>
@@ -92,13 +66,4 @@ class Column extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  setPrimaryKey: (colNumber) => dispatch(setTablePrimaryKeyAction(colNumber)),
-});
-
-const mapStateToProps = (state) => {
-  const { primaryKeyColumn } = state.createTable;
-  return { primaryKeyColumn };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(Column);
+export default Column;

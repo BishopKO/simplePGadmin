@@ -14,7 +14,7 @@ const DatabaseCreate = ({ config, createDatabase, getDatabases }) => {
     const testName = RegExp('^[a-z_]+$');
 
     if (name.length > 0 && testName.test(name)) {
-      config.databaseName = name;
+      config.currentDb = name;
       createDatabase(config)
         .then(() => getDatabases(config))
         .then(() => history.push('/'));

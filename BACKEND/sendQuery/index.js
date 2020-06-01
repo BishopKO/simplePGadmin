@@ -19,6 +19,8 @@ function sendQuery(config, query, params = []) {
   return new Promise((resolve, reject) => {
     const client = new Client(config);
 
+    console.log(config, query, params);
+
     client.connect((error) => {
       if (error) {
         client.end();
@@ -31,7 +33,7 @@ function sendQuery(config, query, params = []) {
             resolve(response.rows);
           })
           .catch((error) => {
-            console.log(error.message);
+            console.log('SendQuery:', error.message);
             client.end();
             reject(error.message);
           });

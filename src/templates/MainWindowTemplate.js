@@ -14,10 +14,11 @@ const optionsDbs = [
 ];
 
 const optionsTbl = [
-  { value: 'tblCreate', name: 'Create' },
+  { value: 'tblCreate', name: 'Create table' },
   { value: 'tblInsert', name: 'Insert' },
-  { value: 'tblUpdate', name: 'Update' },
-  { value: 'tblShowSearch', name: 'Search' },
+  { value: 'tblUpdate', name: 'Update table' },
+  { value: 'tblShowSearch', name: 'Search in table' },
+  { value: 'tblDrop', name: 'Drop table' },
 ];
 
 const StyledWrapper = styled.div`

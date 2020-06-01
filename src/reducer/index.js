@@ -5,7 +5,6 @@ const initState = {
   databases: [],
   tables: [],
   errors: [],
-  createTable: { primaryKeyColumn: -1 },
 };
 
 const myReducer = (state = initState, action) => {

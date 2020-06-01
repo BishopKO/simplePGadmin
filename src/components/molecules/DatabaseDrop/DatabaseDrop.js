@@ -17,8 +17,8 @@ const DatabaseDrop = ({ match, dropDatabase, getDatabases, config }) => {
   let history = useHistory();
 
   const handleDropDatabase = () => {
-    config.database = 'login_db';
-    config.databaseName = databaseName;
+    config.currentDb = databaseName;
+    console.log('drop', config);
     dropDatabase(config)
       .then(() => getDatabases(config))
       .then(() => history.push('/'));

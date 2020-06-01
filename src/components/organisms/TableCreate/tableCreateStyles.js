@@ -2,6 +2,8 @@ import styled, { css } from 'styled-components';
 import BorderWithLabel from 'components/atoms/BorderWithLabel/BorderWithLabel';
 import IconButton from 'components/atoms/IconButton/IconButton';
 
+export const StyledColumnName = styled.div``;
+
 export const StyledAddColumn = styled(BorderWithLabel)`
   width: 420px;
   height: 37px;
@@ -20,7 +22,19 @@ export const StyledAddColumn = styled(BorderWithLabel)`
   }
 `;
 
-export const StyledBorderName = styled(BorderWithLabel)`
+export const StyledBorderTableName = styled(BorderWithLabel)`
+  top: 15px;
+  width: 180px;
+  height: 20px;
+  border: 0.5px solid lightgrey;
+  ::after {
+    font-size: 8px;
+    top: -8px;
+    left: 2px;
+  }
+`;
+
+export const StyledBorderColumnName = styled(BorderWithLabel)`
   width: 180px;
   height: 20px;
   border: 0.5px solid lightgrey;
@@ -107,11 +121,11 @@ export const StyledInput = styled.input`
 `;
 
 export const StyledButtonsWrapper = styled.div`
-  width: 40%;
+  width: 90%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 `;
 
 export const StyledIconButton = styled(IconButton)`
@@ -119,15 +133,16 @@ export const StyledIconButton = styled(IconButton)`
   width: 20px;
   height: 20px;
   ::after {
-    width: 30px;
+    width: 40px;
     position: absolute;
     content: "${({ label }) => label}";
     right: 0;
-    bottom: -15px;
-    left: -4px;
+    bottom: -15px;   
+    left: -10px;
     font-size: 10px;
     border-radius: 3px;
-    background-color: hsl(160, 20%, 90%);
+    font-weight: bold;
+    background-color: hsl(160, 50%, 90%);
   }
   
   :hover::after{

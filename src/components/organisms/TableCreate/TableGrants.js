@@ -5,8 +5,7 @@ class TableGrants extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      grantsList: props.grants,
-      grants: { SELECT: false, INSERT: false, UPDATE: false, DELETE: false },
+      grants: { SELECT: true, INSERT: true, UPDATE: true, DELETE: true },
     };
     this.handleChangeGrants = this.handleChangeGrants.bind(this);
   }
@@ -24,16 +23,15 @@ class TableGrants extends Component {
   render() {
     return (
       <StyledGrants label="Grants" width={'230px'}>
-        {this.state.grantsList.map((item, index) => (
-          <label key={this.createKey(item, index)}>
+        {Object.entries(this.state.grants).map(([key, value], index) => (
+          <label key="table_grants">
             <input
-              key={this.createKey(item, index)}
-              id={item.toLocaleLowerCase()}
+              key={this.createKey('grant', index)}
               type="checkbox"
-              value={item}
-              onClick={(element) => this.handleChangeGrants(element.target.value)}
+              checked={value}
+              onClick={(element) => this.handleChangeGrants(key)}
             />
-            {item}
+            {key}
           </label>
         ))}
       </StyledGrants>

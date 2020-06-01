@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// DATABASES
 export const authenticateAction = (config) => (dispatch) => {
   return axios
     .post('http://127.0.0.1:800/login', {
@@ -54,10 +55,10 @@ export const dropDatabaseAction = (config) => (dispatch) => {
       if (resp.data.error) {
         throw Error(resp.data.error);
       } else {
-        dispatch({ type: 'DROP_DATABASE_SUCCESS', payload: config.databaseName });
+        dispatch({ type: 'DROP_DATABASE_SUCCESS' });
       }
     })
-    .catch((error) => dispatch({ type: 'DROP_DATABASE_ERROR', payload: error.message }));
+    .catch((error) => dispatch({ type: 'DROP_DATABASE_ERROR', payload: error }));
 };
 
 export const renameDatabaseAction = (config) => (dispatch) => {
@@ -75,6 +76,7 @@ export const renameDatabaseAction = (config) => (dispatch) => {
     .catch((error) => dispatch({ type: 'RENAME_DATABASE_ERROR', payload: error.message }));
 };
 
+// TABLES
 export const getTablesAction = (config) => (dispatch) => {
   return axios
     .post('http://127.0.0.1:800/tables', {
@@ -90,6 +92,32 @@ export const getTablesAction = (config) => (dispatch) => {
     .catch((error) => dispatch({ type: 'GET_TABLES_ERROR', payload: error.message }));
 };
 
-export const setTablePrimaryKeyAction = (colNumber) => (dispatch) => {
-  dispatch({ type: 'SET_PRIMARY_KEY', payload: colNumber });
+export const createTablesAction = (config) => (dispatch) => {
+  return axios
+    .post('http://127.0.0.1:800/create_table', {
+      config,
+    })
+    .then((resp) => {
+      if (resp.data.error) {
+        throw new Error(resp.data.error);
+      } else {
+        dispatch({ type: 'CREATE_TABLE_SUCCESS', payload: resp });
+      }
+    })
+    .catch((error) => dispatch({ type: 'CREATE_TABLE_ERROR', payload: error.message }));
+};
+
+export const dropTableAction = (config) => (dispatch) => {
+  return axios
+    .post('http://127.0.0.1:800/drop_table', {
+      config,
+    })
+    .then((resp) => {
+      if (resp.data.error) {
+        throw new Error(resp.data.error);
+      } else {
+        dispatch({ type: 'DROP_TABLE_SUCCESS' });
+      }
+    })
+    .catch((error) => dispatch({ type: 'DROP_TABLE_ERROR', payload: error.message }));
 };
