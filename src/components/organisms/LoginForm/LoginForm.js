@@ -1,15 +1,20 @@
 import React, { Component } from 'react';
-import Input from 'components/atoms/Input/Input';
+import InputWithBorder from 'components/organisms/InputWithBorder/InputWithBorder';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { authenticateAction } from 'actions';
-import { StyledWrapper, StyledButton, StyledForm } from './loginFormStyles';
+import {
+  StyledWrapper,
+  StyledButton,
+  StyledForm,
+  StyledFormInputsWrapper,
+} from './loginFormStyles';
 
 class LoginForm extends Component {
   handleCheckLogin = () => {
     const { config, authUser } = this.props;
 
-    document.querySelectorAll('.LoginForm Input').forEach((item) => {
+    document.querySelectorAll('.LoginForm InputWithBorder').forEach((item) => {
       config[item.name] = item.value;
     });
     authUser(config);
@@ -37,9 +42,29 @@ class LoginForm extends Component {
     return (
       <StyledWrapper>
         <StyledForm className="LoginForm">
-          <Input label="Username" name="user" type="text" />
-          <Input label="Password" name="password" type="password" />
-          <Input label="Host" name="host" type="text" />
+          <StyledFormInputsWrapper>
+            <InputWithBorder
+              label="Username"
+              name="user"
+              type="text"
+              width="100%"
+              activeUpdate={false}
+            />
+            <InputWithBorder
+              label="Password"
+              name="password"
+              type="password"
+              width="100%"
+              activeUpdate={false}
+            />
+            <InputWithBorder
+              label="Host"
+              name="host"
+              type="text"
+              width="100%"
+              activeUpdate={false}
+            />
+          </StyledFormInputsWrapper>
           <StyledButton type="button" onClick={this.handleCheckLogin}>
             {loggedIn ? 'Disconnect' : 'Connect'}
           </StyledButton>

@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import Button from "../../atoms/Button/Button";
+import styled from 'styled-components';
+import Button from 'components/atoms/Button/Button';
 
 export const StyledTitle = styled.p`
   font-size: 12px;

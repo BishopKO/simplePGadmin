@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyledGrants } from './tableCreateStyles';
+import { StyledGrants } from '../TableCreate/tableCreateStyles';
 
 class TableGrants extends Component {
   constructor(props) {

@@ -6,7 +6,7 @@ const queries = require('./queries');
 const app = express();
 app.use(express.json());
 app.use(cors());
-// TODO: REFACTOR TO ONE METHOD
+
 // LOGIN
 app.post('/login', (req, res) => {
   const { user, password, host, database } = req.body.config;
@@ -15,8 +15,10 @@ app.post('/login', (req, res) => {
     .then((resp) => {
       res.json(resp);
     })
-    .catch((error) => res.json({ error: error }));
+    .catch((error) => res.json({ error: error.message }));
 });
+
+// --------DATABASES--------
 
 // GET DATABASES
 app.post('/databases', (req, res) => {
@@ -48,7 +50,7 @@ app.post('/create_database', (req, res) => {
       }
     })
     .catch((error) => {
-      res.json({ error: error });
+      res.json({ error: error.message });
     });
 });
 
@@ -62,8 +64,7 @@ app.post('/drop_database', (req, res) => {
       res.json(currentDb);
     })
     .catch((error) => {
-      console.log(error);
-      res.json({ error: error });
+      res.json({ error: error.message });
     });
 });
 
@@ -77,24 +78,23 @@ app.post('/rename_database', (req, res) => {
       queries.genQueryRenameDatabase(currentDb, newDbName),
     )
     .then(() => {
-      res.json(databaseNameNew);
+      res.json(newDbName);
     })
     .catch((error) => {
-      console.log(error);
-      res.json({ error: error });
+      res.json({ error: error.message });
     });
 });
+
+// --------TABLES--------
 
 // GET TABLES
 app.post('/tables', (req, res) => {
   const { user, password, host, currentDb } = req.body.config;
   const database = currentDb;
-  console.log(user, password, host, database);
 
   sendQuery
     .sendQuery({ user, password, host, database }, queries.genQueryGetTables(database))
     .then((resp) => {
-      console.log(resp);
       res.json(resp.map((item) => item.table_name));
     })
     .catch((error) => {
@@ -114,7 +114,7 @@ app.post('/create_table', (req, res) => {
       res.json({ success: 'CREATE_TABLE_SUCCESS' });
     })
     .catch((error) => {
-      res.json({ error: error });
+      res.json({ error: error.message });
     });
 });
 
@@ -130,8 +130,23 @@ app.post('/drop_table', (req, res) => {
       res.json(tableName);
     })
     .catch((error) => {
-      console.log(error);
       res.json({ error: error });
+    });
+});
+
+// GET COLUMNS
+app.post('/get_columns', (req, res) => {
+  let config = req.body.config;
+  config.database = config.currentDb;
+  const { user, password, host, database, tableName } = config;
+
+  sendQuery
+    .sendQuery({ user, password, host, database }, queries.genQueryGetColumns(tableName))
+    .then((resp) => {
+      res.json({ success: 'GET_COLUMNS_SUCCESS', data: resp });
+    })
+    .catch((error) => {
+      res.json({ error: error.message });
     });
 });
 

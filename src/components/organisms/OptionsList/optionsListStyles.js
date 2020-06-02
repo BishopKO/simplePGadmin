@@ -6,7 +6,7 @@ export const StyledWrapper = styled.div`
   display: grid;
   grid-template-rows: 30px 1fr;
   width: 100%;
-  height: 270px;  
+  height: 100%;  
   border:  2px solid hsl(200, 20%, 50%);
   border-radius: 3px; 
   padding: 0;
@@ -59,13 +59,25 @@ export const StyledMenuWrapper = styled.div`
 `;
 
 export const StyledSelect = styled.select`
+  position: relative;
   font-size: 1.2rem;
   font-weight: bold;
   width: 90%;
   height: 100%;
   border: none;
   background: none;
+  cursor: pointer;
   border-right: 1px solid lightgray;
+  -webkit-appearance: none;
+
+  :focus {
+    border: none;
+    outline: none;
+  }
+
+  option:nth-child(1) {
+    display: none;
+  }
 `;
 
 export const StyledGoButton = styled(IconButton)`

@@ -1,5 +1,7 @@
 import React from 'react';
 import Modal from 'components/atoms/Modal/Modal';
+import MainWindowTemplate from 'templates/MainWindowTemplate';
+
 import { StyledCreateButton, StyledTitle, StyledInput } from './databaseRenameStyles';
 import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -23,15 +25,17 @@ const DatabaseRename = ({ match, config, renameDatabase, getDatabases }) => {
   };
 
   return (
-    <Modal>
-      <StyledTitle>
-        RENAME DATABASE <span>{databaseName}</span> TO:
-      </StyledTitle>
-      <StyledInput id="renameInput" placeholder="Database name." />
-      <StyledCreateButton bgColor={'grey'} onClick={handleRename}>
-        Save
-      </StyledCreateButton>
-    </Modal>
+    <MainWindowTemplate>
+      <Modal>
+        <StyledTitle>
+          RENAME DATABASE <span>{databaseName}</span> TO:
+        </StyledTitle>
+        <StyledInput id="renameInput" placeholder="Database name." />
+        <StyledCreateButton bgColor={'grey'} onClick={handleRename}>
+          Save
+        </StyledCreateButton>
+      </Modal>
+    </MainWindowTemplate>
   );
 };
 

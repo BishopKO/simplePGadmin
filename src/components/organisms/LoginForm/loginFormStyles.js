@@ -1,18 +1,26 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const StyledWrapper = styled.div`
   width: 100%;
-  height: 300px;
+  height: 400px;
   display: flex;
   flex-direction: column;
-  justify-items: center;
+  justify-content: flex-start;
   align-items: center;
 `;
 
 export const StyledForm = styled.form`
+  margin-top: 10px;
+  width: 95%;
+  height: 50%;
+`;
+
+export const StyledFormInputsWrapper = styled.div`
+  height: 50%;
   width: 100%;
-  padding: 10px;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `;
 
 export const StyledButton = styled.button`

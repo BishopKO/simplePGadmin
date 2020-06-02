@@ -38,6 +38,10 @@ const genQueryCreateTable = (tableName, columns) => {
   return `CREATE TABLE ${tableName} (${cols})`;
 };
 
+const genQueryGetColumns = (tableName) => {
+  return `SELECT column_name, data_type, character_maximum_length, column_default FROM information_schema.columns where table_name='${tableName}' and table_schema='public'`;
+};
+
 const genQueryDropTable = (tableName) => {
   return `DROP TABLE ${tableName}`;
 };
@@ -50,4 +54,5 @@ module.exports = {
   genQueryDropDatabase,
   genQueryCreateTable,
   genQueryDropTable,
+  genQueryGetColumns,
 };

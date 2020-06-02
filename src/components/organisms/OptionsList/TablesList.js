@@ -19,6 +19,15 @@ class TablesList extends Component {
     this.state = {
       activeOption: 'tblCreate',
       activeElement: '',
+      options: [
+        { value: 'tblOptions', name: 'Table options...' },
+        { value: 'tblCreate', name: 'Create new table' },
+        { value: 'tblInsert', name: 'Insert into table' },
+        { value: 'tblUpdate', name: 'Update table' },
+        { value: 'tblGrants', name: 'Set table grants' },
+        { value: 'tblShowSearch', name: 'Search in table' },
+        { value: 'tblDrop', name: 'Drop table' },
+      ],
     };
     this.createPathname = this.createPathname.bind(this);
   }
@@ -44,13 +53,13 @@ class TablesList extends Component {
   }
 
   render() {
-    const { options, tables, label } = this.props;
+    const { tables } = this.props;
     return (
-      <StyledBorder label={label}>
+      <StyledBorder label="Tables options...">
         <StyledWrapper>
           <StyledMenuWrapper>
             <StyledSelect className="options">
-              {options.map((item, index) => (
+              {this.state.options.map((item, index) => (
                 <option
                   key={this.createKey(item, index)}
                   value={item.value}
@@ -81,14 +90,11 @@ class TablesList extends Component {
 }
 
 TablesList.propTypes = {
-  options: PropTypes.array.isRequired,
   tables: PropTypes.array.isRequired,
-  label: PropTypes.string.isRequired,
   config: PropTypes.object.isRequired,
 };
 
 TablesList.dedaultProps = {
-  options: [],
   tables: [],
 };
 

@@ -20,6 +20,12 @@ class DatabasesList extends Component {
     this.state = {
       activeElement: null,
       activeOption: 'dbCreate',
+      options: [
+        { value: 'dbOptions', name: 'Database options...' },
+        { value: 'dbCreate', name: 'Create database' },
+        { value: 'dbRename', name: 'Rename database' },
+        { value: 'dbDrop', name: 'Drop database' },
+      ],
     };
     this.createPathname = this.createPathname.bind(this);
     this.handleGetTablesOnClick = this.handleGetTablesOnClick.bind(this);
@@ -60,13 +66,13 @@ class DatabasesList extends Component {
   }
 
   render() {
-    const { options, label, databases } = this.props;
+    const { label, databases } = this.props;
     return (
-      <StyledBorder label={label}>
+      <StyledBorder label="DATABASES">
         <StyledWrapper>
           <StyledMenuWrapper>
             <StyledSelect className="options">
-              {options.map((item, index) => (
+              {this.state.options.map((item, index) => (
                 <option
                   key={this.createKey(item, index)}
                   value={item.value}

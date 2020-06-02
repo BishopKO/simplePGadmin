@@ -2,10 +2,18 @@ import styled, { css } from 'styled-components';
 import BorderWithLabel from 'components/atoms/BorderWithLabel/BorderWithLabel';
 import IconButton from 'components/atoms/IconButton/IconButton';
 
-export const StyledColumnName = styled.div``;
+export const StyledTitle = styled.p`
+  font-size: 12px;
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: 20px;
+  span {
+    color: green;
+  }
+`;
 
 export const StyledAddColumn = styled(BorderWithLabel)`
-  width: 420px;
+  width: 350px;
   height: 37px;
   display: flex;
   flex-direction: row;
@@ -22,25 +30,14 @@ export const StyledAddColumn = styled(BorderWithLabel)`
   }
 `;
 
-export const StyledBorderTableName = styled(BorderWithLabel)`
-  top: 15px;
-  width: 180px;
-  height: 20px;
-  border: 0.5px solid lightgrey;
-  ::after {
-    font-size: 8px;
-    top: -8px;
-    left: 2px;
-  }
-`;
-
 export const StyledBorderColumnName = styled(BorderWithLabel)`
   width: 180px;
   height: 20px;
   border: 0.5px solid lightgrey;
+
   ::after {
     font-size: 8px;
-    top: -8px;
+    top: -7px;
     left: 2px;
   }
 `;
@@ -63,16 +60,9 @@ export const StyledBorderWidth = styled(BorderWithLabel)`
 
   ::after {
     font-size: 8px;
-    top: -8px;
+    top: -7px;
     left: 2px;
   }
-
-  ${({ disabled }) =>
-    disabled &&
-    css`
-      pointer-events: none;
-      color: grey;
-    `};
 `;
 
 export const StyledBorderPK = styled(BorderWithLabel)`
@@ -87,15 +77,13 @@ export const StyledBorderPK = styled(BorderWithLabel)`
   }
 `;
 
-export const StyledSelect = styled.select`
+export const StyledType = styled.input`
   width: 95%;
   position: relative;
   border: none;
   background-color: hsl(200, 20%, 95%);
   text-align: center;
   border-radius: 3px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
 
   ::after {
     content: '';
@@ -116,12 +104,15 @@ export const StyledInputCheckbox = styled.input`
 export const StyledInput = styled.input`
   border: none;
   width: 98%;
+  height: 12px;
+  font-size: 10px;
+  text-align: ${({ center }) => (center ? 'center' : 'left')};
   background-color: hsl(200, 20%, 95%);
   border-radius: 3px;
 `;
 
 export const StyledButtonsWrapper = styled.div`
-  width: 90%;
+  width: 65px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -132,6 +123,7 @@ export const StyledIconButton = styled(IconButton)`
   position: relative;
   width: 20px;
   height: 20px;
+  
   ::after {
     width: 40px;
     position: absolute;
@@ -147,17 +139,5 @@ export const StyledIconButton = styled(IconButton)`
   
   :hover::after{
     background-color: hsl(140, 60%, 70%);
-  }
-`;
-
-export const StyledGrants = styled(BorderWithLabel)`
-  border: 0.5px solid black;
-  margin-top: 25px;
-  label {
-    font-size: 10px;
-  }
-
-  ::after {
-    top: -8px;
   }
 `;

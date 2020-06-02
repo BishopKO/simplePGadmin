@@ -18,8 +18,7 @@ function checkConfig(config) {
 function sendQuery(config, query, params = []) {
   return new Promise((resolve, reject) => {
     const client = new Client(config);
-
-    console.log(config, query, params);
+    console.log(query);
 
     client.connect((error) => {
       if (error) {
@@ -33,7 +32,6 @@ function sendQuery(config, query, params = []) {
             resolve(response.rows);
           })
           .catch((error) => {
-            console.log('SendQuery:', error.message);
             client.end();
             reject(error.message);
           });

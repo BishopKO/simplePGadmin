@@ -8,25 +8,24 @@ export const StyledModal = styled.div`
   transform: scale(0.7);
   justify-items: center;
   align-content: space-between;
-  width: 350px;
-  min-height: 130px;
-  border: ${({ theme }) => `2px solid ${theme.border}`};
-  padding: 10px;
-  left: 50%;
-  margin-left: -200px;
-  top: 80px;
+  padding: 20px;
+  top: 40px;
   border-radius: 5px;
   background-color: white;
-
-  ${({ createTable }) =>
-    createTable &&
+  z-index: 1;
+  width: ${({ width }) => width || '400px'};
+  min-height: ${({ height }) => height || '200px'}
+  border: ${({ theme }) => `2px solid ${theme.border}`};
+  box-shadow: ${({ theme }) => `2px 2px 10px ${theme.border}`};
+ 
+  
+  ${({ table }) =>
+    table &&
     css`
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
       align-items: center;
-      width: 450px;
-      min-height: 50px;
     `}
 `;
 

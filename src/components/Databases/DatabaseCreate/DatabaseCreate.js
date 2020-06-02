@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { StyledInput, StyledTitle, StyledCreateButton } from './databaseCreateStyles';
+import MainWindowTemplate from 'templates/MainWindowTemplate';
 
 const DatabaseCreate = ({ config, createDatabase, getDatabases }) => {
   let history = useHistory();
@@ -24,13 +25,15 @@ const DatabaseCreate = ({ config, createDatabase, getDatabases }) => {
   };
 
   return (
-    <Modal>
-      <StyledTitle>CREATE NEW DATABASE</StyledTitle>
-      <StyledInput id="databaseNameInput" placeholder="Database name." />
-      <StyledCreateButton bgColor={'grey'} onClick={handleCreateDatabase}>
-        Create
-      </StyledCreateButton>
-    </Modal>
+    <MainWindowTemplate>
+      <Modal>
+        <StyledTitle>CREATE NEW DATABASE</StyledTitle>
+        <StyledInput id="databaseNameInput" placeholder="Database name." />
+        <StyledCreateButton bgColor={'grey'} onClick={handleCreateDatabase}>
+          Create
+        </StyledCreateButton>
+      </Modal>
+    </MainWindowTemplate>
   );
 };
 

@@ -8,7 +8,7 @@ const initState = {
 };
 
 const myReducer = (state = initState, action) => {
-  console.log('REDUCER: ', action, 'STATE: ', state.config);
+  console.log('REDUCER: ', action);
   switch (action.type) {
     case 'AUTH_USER_SUCCESS':
       return {
@@ -40,6 +40,7 @@ const myReducer = (state = initState, action) => {
       return {
         ...state,
         errors: state.errors.concat(['Get tables error']),
+        tables: [],
       };
     case 'CREATE_DATABASE_SUCCESS':
       return {
