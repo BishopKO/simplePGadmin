@@ -33,6 +33,8 @@ const InputWithBorder = ({
   colNumber,
   activeUpdate,
   centerText,
+  placeholder,
+  className,
 }) => {
   const valuesToSession = (colNumber, name, value) => {
     let currentSession = JSON.parse(sessionStorage.getItem('columns'));
@@ -48,6 +50,8 @@ const InputWithBorder = ({
   return (
     <BorderWithLabel label={label} width={width} height={height} disabled={disabled}>
       <StyledInput
+        className={className}
+        placeholder={placeholder}
         centerText={centerText}
         type={type}
         value={value}

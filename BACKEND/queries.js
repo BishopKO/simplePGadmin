@@ -62,6 +62,10 @@ const genQuerySelectAllTable = (tableName) => {
   return `SELECT * from ${tableName}`;
 };
 
+const genQuerySelectWhere = (tableName, searchColumn, searchValue) => {
+  return `SELECT * FROM ${tableName} WHERE ${searchColumn}='${searchValue}'`;
+};
+
 module.exports = {
   genQueryGetDatabases,
   genQueryGetTables,
@@ -73,4 +77,5 @@ module.exports = {
   genQueryGetColumns,
   genQueryInsertTable,
   genQuerySelectAllTable,
+  genQuerySelectWhere,
 };

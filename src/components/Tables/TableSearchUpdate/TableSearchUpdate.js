@@ -5,16 +5,38 @@ import Modal from 'components/atoms/Modal/Modal';
 import MainWindowTemplate from 'templates/MainWindowTemplate';
 
 import StyledTitle from 'components/atoms/StyledTitle/StyledTitle';
+import InputWithBorder from 'components/organisms/InputWithBorder/InputWithBorder';
 import viewIcon from 'assets/viewIcon.svg';
 import trashIcon from 'assets/trashIcon.svg';
 import editIcon from 'assets/editIcon.svg';
 import { StyledTable, StyledIconButton } from './TableSearchUpdateStyles';
-import { getTableDataAction } from 'actions/index';
+import { getTableAllDataAction, getTableWhereDataAction } from 'actions/index';
 
 class TableSearchUpdate extends Component {
   componentDidMount() {
-    const { config, getTableColumns } = this.props;
-    getTableColumns(config);
+    const searchInput = document.querySelector('.SearchInput');
+    const { config, getTableColumnsAll, getTableColumnsWhere } = this.props;
+
+    getTableColumnsAll(config);
+
+    searchInput.addEventListener('keypress', (event) => {
+      if (event.key === 'Enter') {
+        const [column, value] = searchInput.value.split('=');
+        if (column.length > 0) {
+          config.searchColumn = column;
+          config.searchValue = value;
+          getTableColumnsWhere(config);
+        } else {
+          getTableColumnsAll(config);
+        }
+      }
+    });
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.columnsData.length === 0) {
+      this.props.history.push('/');
+    }
   }
 
   render() {
@@ -22,10 +44,17 @@ class TableSearchUpdate extends Component {
     const { currentTbl } = this.props.config;
     return (
       <MainWindowTemplate>
-        <Modal width={columnsNames.length * 100 + 'px'}>
-          <StyledTitle fontSize="1.5rem">
+        <Modal table width={columnsNames.length * 100 + 'px'}>
+          <StyledTitle className="search_input" fontSize="1.5rem">
             Table <span>{currentTbl}</span> entries:
           </StyledTitle>
+          <InputWithBorder
+            className="SearchInput"
+            height="25px"
+            width="80%"
+            label="Search in table"
+            placeholder="example: column_name=value (* -replaces any char)"
+          />
           <StyledTable>
             <tr>
               {columnsNames.map((item) => (
@@ -71,7 +100,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  getTableColumns: (config) => dispatch(getTableDataAction(config)),
+  getTableColumnsAll: (config) => dispatch(getTableAllDataAction(config)),
+  getTableColumnsWhere: (config) => dispatch(getTableWhereDataAction(config)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TableSearchUpdate);

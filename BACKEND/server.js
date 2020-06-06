@@ -152,7 +152,7 @@ app.post('/get_columns', (req, res) => {
     });
 });
 
-//INSERT INTO TABLE
+// INSERT INTO TABLE
 app.post('/insert_table', (req, res) => {
   let config = req.body.config;
   config.database = config.currentDb;
@@ -171,6 +171,7 @@ app.post('/insert_table', (req, res) => {
     });
 });
 
+// GET ALL FROM TABLE
 app.post('/select_tableAll', (req, res) => {
   let config = req.body.config;
   config.database = config.currentDb;
@@ -179,7 +180,27 @@ app.post('/select_tableAll', (req, res) => {
   sendQuery
     .sendQuery({ user, password, host, database }, queries.genQuerySelectAllTable(currentTbl))
     .then((resp) => {
-      res.json({ success: 'GET_COLUMNS_SUCCESS', data: resp });
+      res.json({ success: 'GET_COLUMNS_ALL_SUCCESS', data: resp });
+    })
+    .catch((error) => {
+      res.json({ error: error });
+    });
+});
+
+// GET WHERE FROM TABLE
+app.post('/select_tableWhere', (req, res) => {
+  let config = req.body.config;
+  config.database = config.currentDb;
+  const { user, password, host, database, currentTbl, searchColumn, searchValue } = config;
+
+  sendQuery
+    .sendQuery(
+      { user, password, host, database },
+      queries.genQuerySelectWhere(currentTbl, searchColumn, searchValue),
+    )
+    .then((resp) => {
+      console.log(resp);
+      res.json({ success: 'GET_COLUMNS_WHERE_SUCCESS', data: resp });
     })
     .catch((error) => {
       res.json({ error: error });

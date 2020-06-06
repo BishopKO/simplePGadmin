@@ -137,7 +137,7 @@ export const insertTableAction = (config) => (dispatch) => {
     .catch((error) => dispatch({ type: 'INSERT_TABLE_ERROR', payload: error.message }));
 };
 
-export const getTableDataAction = (config) => (dispatch) => {
+export const getTableAllDataAction = (config) => (dispatch) => {
   return axios
     .post('http://127.0.0.1:800/select_tableAll', {
       config,
@@ -150,6 +150,22 @@ export const getTableDataAction = (config) => (dispatch) => {
       }
     })
     .catch((error) => dispatch({ type: 'SELECT_ALL_ERROR', payload: error.message }));
+};
+
+export const getTableWhereDataAction = (config) => (dispatch) => {
+  dispatch({ type: 'LOADING_DATA' });
+  return axios
+    .post('http://127.0.0.1:800/select_tableWhere', {
+      config,
+    })
+    .then((resp) => {
+      if (resp.data.error) {
+        throw new Error(resp.data.error);
+      } else {
+        dispatch({ type: 'GET_COLUMNS_WHERE_SUCCESS', payload: resp });
+      }
+    })
+    .catch((error) => dispatch({ type: 'GET_COLUMNS_WHERE_ERROR', payload: error.message }));
 };
 
 //

@@ -85,6 +85,7 @@ class TableInsert extends Component {
             <IconButton icon={trashIcon} label="Undo" />
           </StyledButtonsWrapper>
 
+          {/*TODO: ADD WRAPPER WITH OVERFLOW-Y AUTO*/}
           {this.state.columns.map((item, index) => (
             <TableInsertColumn
               colNumber={index}

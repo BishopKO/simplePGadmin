@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import DatabasesList from 'components/organisms/OptionsList/DatabasesList';
 import TablesList from 'components/organisms/OptionsList/TablesList';
+import StyledSpinner from 'components/atoms/Spinner/Spinner';
 
 import { PageContext } from 'context';
 import { getDatabasesAction } from 'actions';
@@ -18,7 +19,7 @@ const StyledWrapper = styled.div`
 
 class MainWindowTemplate extends Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { loggedIn, config, getDatabases, errors } = this.props;
+    const { loggedIn, config, getDatabases, errors, loading } = this.props;
     if (loggedIn) {
       getDatabases(config);
     }
@@ -28,9 +29,11 @@ class MainWindowTemplate extends Component {
   }
 
   render() {
-    const { children } = this.props;
+    const { children, loading } = this.props;
+
     return (
       <StyledWrapper>
+        {loading && <StyledSpinner />}
         {children}
         <PageContext.Provider>
           <DatabasesList history={this.props.history} />
@@ -42,8 +45,8 @@ class MainWindowTemplate extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { config, loggedIn, errors } = state;
-  return { config, loggedIn, errors };
+  const { config, loggedIn, errors, loading } = state;
+  return { config, loggedIn, errors, loading };
 };
 
 const mapDispatchToProps = (dispatch) => ({

@@ -7,11 +7,17 @@ const initState = {
   columnsData: [],
   columnsNames: [],
   errors: [],
+  loading: false,
 };
 
 const myReducer = (state = initState, action) => {
   console.log('REDUCER: ', action);
   switch (action.type) {
+    case 'LOADING_DATA':
+      return {
+        ...state,
+        loading: true,
+      };
     case 'AUTH_USER_SUCCESS':
       return {
         ...state,
@@ -85,6 +91,18 @@ const myReducer = (state = initState, action) => {
         columnsData: action.payload.data.data.map((item) => Object.values(item)),
       };
     case 'SELECT_ALL_ERROR':
+      return {
+        ...state,
+        errors: state.errors.concat([action.payload.error]),
+      };
+    case 'GET_COLUMNS_WHERE_SUCCESS':
+      return {
+        ...state,
+        loading: false,
+        columnsNames: Object.keys(action.payload.data.data[0]),
+        columnsData: action.payload.data.data.map((item) => Object.values(item)),
+      };
+    case 'GET_COLUMNS_WHERE_ERROR':
       return {
         ...state,
         errors: state.errors.concat([action.payload.error]),
