@@ -2,6 +2,17 @@ import styled, { css } from 'styled-components';
 import IconButton from 'components/atoms/IconButton/IconButton';
 import BorderWithLabel from 'components/atoms/BorderWithLabel/BorderWithLabel';
 
+export const StyledBorder = styled(BorderWithLabel)`
+  padding: 5px;
+  height: 100%;
+  width: 100%;
+  ::after {
+    font-size: 13px;
+    top: -10px;
+    height: 13px;
+  }
+`;
+
 export const StyledWrapper = styled.div`  
   display: grid;
   grid-template-rows: 30px 1fr;
@@ -62,12 +73,14 @@ export const StyledSelect = styled.select`
   position: relative;
   font-size: 1.2rem;
   font-weight: bold;
-  width: 90%;
+  padding: 2px;
+  width: 100%;
   height: 100%;
   border: none;
   background: none;
   cursor: pointer;
   border-right: 1px solid lightgray;
+  justify-content: center;
   -webkit-appearance: none;
 
   :focus {
@@ -77,21 +90,6 @@ export const StyledSelect = styled.select`
 
   option:nth-child(1) {
     display: none;
-  }
-`;
-
-export const StyledGoButton = styled(IconButton)`
-  width: 30px;
-  height: 30px;
-`;
-
-export const StyledBorder = styled(BorderWithLabel)`
-  height: 100%;
-  width: 100%;
-  padding: 5px;
-  ::after {
-    font-size: 13px;
-    top: -10px;
-    height: 13px;
+    text-align: center;
   }
 `;

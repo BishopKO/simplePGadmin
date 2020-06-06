@@ -122,17 +122,48 @@ export const dropTableAction = (config) => (dispatch) => {
     .catch((error) => dispatch({ type: 'DROP_TABLE_ERROR', payload: error.message }));
 };
 
-export const getColumnsAction = (config) => (dispatch) => {
+export const insertTableAction = (config) => (dispatch) => {
   return axios
-    .post('http://127.0.0.1:800/get_columns', {
+    .post('http://127.0.0.1:800/insert_table', {
       config,
     })
     .then((resp) => {
       if (resp.data.error) {
         throw new Error(resp.data.error);
       } else {
-        dispatch({ type: 'DROP_TABLE_SUCCESS', payload: resp.data });
+        dispatch({ type: 'INSERT_TABLE_SUCCESS' });
       }
     })
-    .catch((error) => dispatch({ type: 'DROP_TABLE_ERROR', payload: error.message }));
+    .catch((error) => dispatch({ type: 'INSERT_TABLE_ERROR', payload: error.message }));
 };
+
+export const getTableDataAction = (config) => (dispatch) => {
+  return axios
+    .post('http://127.0.0.1:800/select_tableAll', {
+      config,
+    })
+    .then((resp) => {
+      if (resp.data.error) {
+        throw new Error(resp.data.error);
+      } else {
+        dispatch({ type: 'SELECT_ALL_SUCCESS', payload: resp });
+      }
+    })
+    .catch((error) => dispatch({ type: 'SELECT_ALL_ERROR', payload: error.message }));
+};
+
+//
+// export const getColumnsAction = (config) => (dispatch) => {
+//   return axios
+//     .post('http://127.0.0.1:800/get_columns', {
+//       config,
+//     })
+//     .then((resp) => {
+//       if (resp.data.error) {
+//         throw new Error(resp.data.error);
+//       } else {
+//         dispatch({ type: 'DROP_TABLE_SUCCESS', payload: resp.data });
+//       }
+//     })
+//     .catch((error) => dispatch({ type: 'DROP_TABLE_ERROR', payload: error.message }));
+// };

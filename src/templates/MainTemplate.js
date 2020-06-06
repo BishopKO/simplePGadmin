@@ -5,6 +5,7 @@ import mainTheme from 'themes/mainTheme';
 import GlobalStyle from 'themes/GlobalStyle';
 
 const StyledWrapper = styled.div`
+  height: 350px;
   margin-top: 20px;
   display: flex;
   flex-direction: row;

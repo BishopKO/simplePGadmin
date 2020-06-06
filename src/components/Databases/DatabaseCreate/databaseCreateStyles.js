@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import Button from 'components/atoms/Button/Button';
 
 export const StyledTitle = styled.p`
   font-size: 12px;
@@ -23,18 +22,5 @@ export const StyledInput = styled.input`
   ::placeholder {
     text-transform: none;
     text-align: center;
-  }
-`;
-
-export const StyledCreateButton = styled(Button)`
-  width: 60px;
-  height: 30px;
-  padding: 0;
-  margin: 0;
-  border-radius: 3px;
-  justify-self: flex-end;
-
-  :hover {
-    background-color: green;
   }
 `;

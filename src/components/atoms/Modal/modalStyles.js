@@ -14,11 +14,10 @@ export const StyledModal = styled.div`
   background-color: white;
   z-index: 1;
   width: ${({ width }) => width || '400px'};
-  min-height: ${({ height }) => height || '200px'}
+  min-height: ${({ height }) => height || '200px'};
   border: ${({ theme }) => `2px solid ${theme.border}`};
   box-shadow: ${({ theme }) => `2px 2px 10px ${theme.border}`};
- 
-  
+
   ${({ table }) =>
     table &&
     css`
@@ -31,7 +30,7 @@ export const StyledModal = styled.div`
 
 export const StyledCloseButton = styled(IconButton)`
   position: absolute;
-  top: 5px;
-  right: 5px;
+  right: -25px;
+  top: 0;
   width: 10px;
 `;

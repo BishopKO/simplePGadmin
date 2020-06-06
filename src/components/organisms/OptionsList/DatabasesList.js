@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
-import goIcon from 'assets/goIcon.svg';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getTablesAction } from 'actions';
-import { Link } from 'react-router-dom';
+
 import {
   StyledBorder,
   StyledMenuWrapper,
   StyledList,
   StyledLi,
   StyledSelect,
-  StyledGoButton,
   StyledWrapper,
 } from './optionsListStyles';
 
@@ -18,7 +16,7 @@ class DatabasesList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeElement: null,
+      activeElement: this.props.config.currentDb,
       activeOption: 'dbCreate',
       options: [
         { value: 'dbOptions', name: 'Database options...' },
@@ -28,12 +26,13 @@ class DatabasesList extends Component {
       ],
     };
     this.createPathname = this.createPathname.bind(this);
+    this.handleUseOption = this.handleUseOption.bind(this);
     this.handleGetTablesOnClick = this.handleGetTablesOnClick.bind(this);
   }
 
-  createPathname() {
-    const { activeOption, activeElement } = this.state;
-    switch (activeOption) {
+  createPathname(option) {
+    const { activeElement } = this.state;
+    switch (option) {
       case 'dbCreate':
         return '/dbCreate/';
       case 'dbRename':
@@ -59,30 +58,39 @@ class DatabasesList extends Component {
   handleGetTablesOnClick(element) {
     let config = this.props.config;
     const getDatabaseTables = this.props.getDatabaseTables;
-
+    config.currentTbl = '';
     config.currentDb = element;
     getDatabaseTables(config);
     this.setState({ activeElement: element });
   }
 
+  handleUseOption = (item) => {
+    console.log(item);
+    const path = this.createPathname(item, this.state.activeElement);
+    this.props.history.push(path);
+  };
+
   render() {
-    const { label, databases } = this.props;
+    const { databases } = this.props;
     return (
       <StyledBorder label="DATABASES">
         <StyledWrapper>
           <StyledMenuWrapper>
-            <StyledSelect className="options">
+            <StyledSelect onChange={(element) => this.handleUseOption(element.target.value)}>
               {this.state.options.map((item, index) => (
                 <option
                   key={this.createKey(item, index)}
                   value={item.value}
-                  onClick={() => this.setState({ activeOption: item.value })}
+                  disabled={
+                    item.value !== 'dbOptions' &&
+                    item.value !== 'dbCreate' &&
+                    !this.state.activeElement
+                  }
                 >
                   {item.name}
                 </option>
               ))}
             </StyledSelect>
-            <StyledGoButton as={Link} to={this.createPathname} icon={goIcon} />
           </StyledMenuWrapper>
           <StyledList>
             {databases.map((item, index) => (

@@ -6,8 +6,10 @@ import MainWindowTemplate from 'templates/MainWindowTemplate';
 import TableInsertColumn from './TableInsertColumn';
 import saveIcon from 'assets/saveIcon.svg';
 import trashIcon from 'assets/trashIcon.svg';
+import IconButton from 'components/atoms/IconButton/IconButton';
+import { insertTableAction } from 'actions';
 import { connect } from 'react-redux';
-import { StyledTitle, StyledButtonsWrapper, StyledIconButton } from './tableInsertStyles';
+import { StyledTitle, StyledButtonsWrapper } from './tableInsertStyles';
 
 class TableInsert extends Component {
   constructor() {
@@ -16,15 +18,16 @@ class TableInsert extends Component {
       columns: [],
     };
     this.columnsToState = this.columnsToState.bind(this);
+    this.handleSave = this.handleSave.bind(this);
   }
 
   componentDidMount() {
     this.columnsToState();
+    sessionStorage.setItem('columns', JSON.stringify({}));
   }
 
   columnsToState() {
     const { config } = this.props;
-    config.tableName = this.props.match.params.name;
 
     const types = {
       integer: 'INT',
@@ -52,11 +55,17 @@ class TableInsert extends Component {
             };
           });
           this.setState({ columns: state });
-          console.log(state);
         }
       }.bind(this),
     );
   }
+
+  handleSave = () => {
+    const { config, insertTable, history } = this.props;
+    const tableSession = JSON.parse(sessionStorage.getItem('columns'));
+    config.columnsData = Object.values(tableSession).map((item) => item);
+    insertTable(config).then(() => history.push('/'));
+  };
 
   createKey = (item, index) => {
     return `${item}_${index}`;
@@ -67,17 +76,18 @@ class TableInsert extends Component {
 
     return (
       <MainWindowTemplate>
-        <Modal table width="600px">
+        <Modal table width="500px">
           <StyledTitle>
             INSERT INTO TABLE <span>{name}</span>
           </StyledTitle>
           <StyledButtonsWrapper>
-            <StyledIconButton icon={saveIcon} label="Save" />
-            <StyledIconButton icon={trashIcon} label="Undo" />
+            <IconButton onClick={this.handleSave} icon={saveIcon} label="Save" />
+            <IconButton icon={trashIcon} label="Undo" />
           </StyledButtonsWrapper>
 
           {this.state.columns.map((item, index) => (
             <TableInsertColumn
+              colNumber={index}
               autoIncrement={item.autoIncrement}
               key={this.createKey(item, index)}
               label={item.name}
@@ -101,4 +111,8 @@ const mapStateToProps = (state) => {
   return { config };
 };
 
-export default connect(mapStateToProps)(TableInsert);
+const mapDispatchToProps = (dispatch) => ({
+  insertTable: (config) => dispatch(insertTableAction(config)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TableInsert);

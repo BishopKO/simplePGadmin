@@ -12,6 +12,7 @@ import {
   StyledButtonsWrapper,
   StyledWarning,
 } from './tableDropStyles';
+import Button from 'components/atoms/Button/Button';
 
 const TableDrop = ({ match, dropTable, getTables, config }) => {
   const tableName = match.params.name;
@@ -26,18 +27,18 @@ const TableDrop = ({ match, dropTable, getTables, config }) => {
 
   return (
     <MainWindowTemplate>
-      <Modal>
+      <Modal height="150px">
         <StyledWarning>
           DROP TABLE <span>{tableName}</span> !
         </StyledWarning>
         <StyledQuestion>Are You sure You want to delete table?</StyledQuestion>
         <StyledButtonsWrapper>
-          <StyledButton onClick={() => history.push('/')} color={'green'}>
+          <Button onClick={() => history.push('/')} bgColor="green">
             No
-          </StyledButton>
-          <StyledButton color={'red'} onClick={handleDropTable}>
+          </Button>
+          <Button onClick={handleDropTable} bgColor="red">
             Yes
-          </StyledButton>
+          </Button>
         </StyledButtonsWrapper>
       </Modal>
     </MainWindowTemplate>

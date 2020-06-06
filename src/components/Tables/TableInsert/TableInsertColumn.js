@@ -1,14 +1,6 @@
 import React, { Component } from 'react';
-import {
-  StyledAddColumn,
-  StyledBorderColumnName,
-  StyledBorderPK,
-  StyledBorderType,
-  StyledBorderWidth,
-  StyledInput,
-  StyledInputCheckbox,
-  StyledType,
-} from './tableInsertStyles';
+import InputWithBorder from 'components/organisms/InputWithBorder/InputWithBorder';
+import { StyledAddColumn } from './tableInsertStyles';
 
 class InsertColumn extends Component {
   constructor(props) {
@@ -19,28 +11,36 @@ class InsertColumn extends Component {
   }
 
   render() {
-    const { type, length, isPrimaryKey, label, autoIncrement } = this.props;
+    const { type, length, label, autoIncrement, colNumber } = this.props;
 
     return (
       <StyledAddColumn>
-        <StyledBorderColumnName label={label}>
-          <StyledInput
-            onChange={(el) => this.setState({ value: el.target.value })}
-            disabled={autoIncrement}
-            value={autoIncrement ? 'AUTO' : ''}
-          />
-        </StyledBorderColumnName>
-        <StyledBorderType label="type">
-          <StyledType value={autoIncrement ? 'SERIAL' : type} disabled />
-        </StyledBorderType>
-
-        <StyledBorderWidth label="length">
-          <StyledInput value={length} disabled center />
-        </StyledBorderWidth>
-
-        <StyledBorderPK label="pk">
-          <StyledInputCheckbox type="checkbox" checked={isPrimaryKey} disabled />
-        </StyledBorderPK>
+        <InputWithBorder
+          colNumber={colNumber}
+          label={label}
+          value={autoIncrement ? 'AUTO' : null}
+          name={label}
+          disabled={autoIncrement}
+          activeUpdate
+        />
+        <InputWithBorder label="type" value={type} disabled width="70px" centerText />
+        <InputWithBorder
+          name="column_length"
+          activeUpdate
+          width="50px"
+          label="length"
+          value={length}
+          disabled
+          centerText
+        />
+        <InputWithBorder
+          name="column_pk"
+          label="PK"
+          width="20px"
+          height="20px"
+          type="checkbox"
+          disabled
+        />
       </StyledAddColumn>
     );
   }

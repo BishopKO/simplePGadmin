@@ -14,41 +14,16 @@ export const StyledTitle = styled.p`
 `;
 
 export const StyledButtonsWrapper = styled.div`
-  width: 95%;
+  width: 100%;
   height: 50px;
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 10px;
-  justify-content: space-around;
-
+  justify-content: space-between;
   margin-bottom: 30px;
   border-bottom: 1px solid lightgrey;
   overflow: hidden;
-`;
-
-export const StyledIconButton = styled(IconButton)`
-  position: relative;
-  width: 20px;
-  height: 20px;  
-  margin: -10px 0 0 0;
-  
-  ::after {
-    width: 40px;
-    position: absolute;
-    content: "${({ label }) => label}";
-    right: 0;
-    bottom: -15px;   
-    left: -10px;
-    font-size: 10px;
-    border-radius: 3px;
-    font-weight: bold;
-    background-color: hsl(160, 50%, 90%);
-  }
-  
-  :hover::after{
-    background-color: hsl(140, 60%, 70%);
-  }
 `;
 
 // TABLE - COLUMN
@@ -62,19 +37,12 @@ export const StyledAddColumn = styled(BorderWithLabel)`
   padding: 5px;
   border: 1px solid lightgrey;
   margin-top: 5px;
-
-  ::after {
-    font-size: 8px;
-    top: -5px;
-    left: 120px;
-    display: none;
-  }
 `;
 
 export const StyledSelect = styled.select`
   width: 95%;
   font-size: 0.8rem;
-
+  height: 1.3rem;
   position: relative;
   border: none;
   background-color: hsl(200, 20%, 95%);
@@ -85,17 +53,5 @@ export const StyledSelect = styled.select`
 
   option:nth-child(1) {
     display: none;
-  }
-`;
-
-export const StyledGrants = styled(BorderWithLabel)`
-  border: 0.5px solid black;
-  margin-top: 25px;
-  label {
-    font-size: 10px;
-  }
-
-  ::after {
-    top: -8px;
   }
 `;

@@ -7,31 +7,17 @@ const Button = styled.button`
   justify-content: center;
   align-items: center;
   text-decoration: none;
-  color: white;
-  width: 100px;
-  height: 100%;
-  background: ${({ bgColor }) => bgColor};
+  width: ${({ width }) => width || '100px'};
+  height: ${({ height }) => height || '25px'};
   border: none;
   border-radius: 3px;
+  color: ${({ color }) => color || 'white'};
+  background: ${({ bgColor }) => bgColor};
 
   :hover {
-    transition: all 0.3s;
+    transform: scale(1.05);
+    transition: all 0.1s;
     cursor: pointer;
-  }
-
-  &.active {
-    background: white;
-    color: black;
-    ::after {
-      position: absolute;
-      content: '';
-      color: white;
-      width: 100%;
-      height: 4px;
-      background: white;
-      bottom: -2px;
-      left: 0;
-    }
   }
 `;
 

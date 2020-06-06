@@ -9,7 +9,8 @@ import trashIcon from 'assets/trashIcon.svg';
 import saveIcon from 'assets/saveIcon.svg';
 import TableCreateColumn from './TableCreateColumn';
 import { connect } from 'react-redux';
-import { StyledTitle, StyledButtonsWrapper, StyledIconButton } from './tableCreateStyles';
+import { StyledTitle, StyledButtonsWrapper } from './tableCreateStyles';
+import IconButton from 'components/atoms/IconButton/IconButton';
 
 import InputWithBorder from 'components/organisms/InputWithBorder/InputWithBorder';
 
@@ -19,8 +20,7 @@ class TableCreate extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      columns: [],
-      columnsRefs: [],
+      columns: 0,
       showGrants: false,
       tableName: '',
       primaryKeyColumn: null,
@@ -33,14 +33,20 @@ class TableCreate extends Component {
   }
 
   setPrimaryKeyColumn(val) {
-    this.setState({ primaryKeyColumn: val });
+    if (val !== this.state.primaryKeyColumn) {
+      this.setState({ primaryKeyColumn: val });
+    } else {
+      this.setState({ primaryKeyColumn: null });
+    }
+  }
+
+  componentDidMount() {
+    sessionStorage.setItem('columns', JSON.stringify({}));
   }
 
   handleCreateNewColumn() {
-    let columns = this.state.columns;
-    columns.push({});
     this.setState({
-      columns: columns,
+      columns: this.state.columns + 1,
     });
   }
 
@@ -49,26 +55,19 @@ class TableCreate extends Component {
   }
 
   handleRemoveColumns() {
-    this.setState({ columns: 0, columnsRefs: [] });
+    this.setState({ columns: 0 });
+    sessionStorage.setItem('columns', JSON.stringify({}));
   }
 
   handleSaveTable = () => {
-    console.log(this.state.columns);
-    // const { createTable, getDatabaseTables, config, history } = this.props;
-    // config.tableName = this.state.tableName;
-    //
-    // let columns = this.state.columnsRefs.map((item) => item.state);
-    //
-    // if (this.state.primaryKeyColumn) {
-    //   columns[this.state.primaryKeyColumn].primaryKey = true;
-    // }
-    // config.columns = JSON.stringify(columns);
-    //
-    // console.log(columns);
+    const { createTable, getDatabaseTables, config, history } = this.props;
+    const tableData = JSON.parse(sessionStorage.getItem('columns'));
+    config.columns = JSON.stringify(Object.entries(tableData).map(([key, val]) => val));
+    config.primaryKey = this.state.primaryKeyColumn;
 
-    // createTable(config)
-    //   .then(() => getDatabaseTables(config))
-    //   .then(() => history.push('/'));
+    createTable(config)
+      .then(() => getDatabaseTables(config))
+      .then(() => history.push('/'));
   };
 
   createKey = (value, index) => {
@@ -92,24 +91,27 @@ class TableCreate extends Component {
               activeUpdate
               type="text"
               label="Table name"
-              width="60%"
-              onChange={(element) => this.setState({ tableName: element.target.value })}
+              width="50%"
             />
-            <StyledIconButton label="Add" icon={addIcon} onClick={this.handleCreateNewColumn} />
-            <StyledIconButton label="Reset" icon={trashIcon} onClick={this.handleRemoveColumns} />
-            <StyledIconButton label="Save" icon={saveIcon} onClick={this.handleSaveTable} />
+            <div>
+              <IconButton label="Add" icon={addIcon} onClick={this.handleCreateNewColumn} />
+              <IconButton label="Reset" icon={trashIcon} onClick={this.handleRemoveColumns} />
+              <IconButton label="Save" icon={saveIcon} onClick={this.handleSaveTable} />
+            </div>
           </StyledButtonsWrapper>
 
-          {this.state.columns.map((item, index) => (
-            <TableCreateColumn
-              colNumber={index}
-              key={this.createKey('column', index)}
-              setPrimaryKey={() => this.setPrimaryKeyColumn(index)}
-              isPrimaryKey={index === this.state.primaryKeyColumn}
-              types={types}
-              updateValue={() => this.updateValues}
-            />
-          ))}
+          {Array(this.state.columns)
+            .fill(null)
+            .map((item, index) => (
+              <TableCreateColumn
+                colNumber={index}
+                key={this.createKey('column', index)}
+                setPrimaryKey={() => this.setPrimaryKeyColumn(index)}
+                isPrimaryKey={index === this.state.primaryKeyColumn}
+                types={types}
+                updateValue={() => this.updateValues}
+              />
+            ))}
         </Modal>
       </MainWindowTemplate>
     );

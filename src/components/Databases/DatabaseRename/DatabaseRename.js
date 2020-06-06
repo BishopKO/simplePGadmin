@@ -2,7 +2,8 @@ import React from 'react';
 import Modal from 'components/atoms/Modal/Modal';
 import MainWindowTemplate from 'templates/MainWindowTemplate';
 
-import { StyledCreateButton, StyledTitle, StyledInput } from './databaseRenameStyles';
+import { StyledTitle, StyledInput } from './databaseRenameStyles';
+import Button from 'components/atoms/Button/Button';
 import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getDatabasesAction, renameDatabaseAction } from 'actions';
@@ -26,14 +27,14 @@ const DatabaseRename = ({ match, config, renameDatabase, getDatabases }) => {
 
   return (
     <MainWindowTemplate>
-      <Modal>
+      <Modal height={'130px'} width={'300px'}>
         <StyledTitle>
           RENAME DATABASE <span>{databaseName}</span> TO:
         </StyledTitle>
         <StyledInput id="renameInput" placeholder="Database name." />
-        <StyledCreateButton bgColor={'grey'} onClick={handleRename}>
+        <Button bgColor={'limegreen'} onClick={handleRename}>
           Save
-        </StyledCreateButton>
+        </Button>
       </Modal>
     </MainWindowTemplate>
   );

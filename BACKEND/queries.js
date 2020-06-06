@@ -20,30 +20,46 @@ const genQueryDropDatabase = (databaseName) => {
 };
 
 // TABLES
-const genQueryCreateTable = (tableName, columns) => {
+const genQueryCreateTable = (columns, primaryKey) => {
   const cols = JSON.parse(columns)
-    .map((item) => {
-      let { nameValue, typeValue, widthValue, primaryKey } = item;
+    .slice(0, -1)
+    .map((item, index) => {
+      let { column_name, column_type, column_length } = item;
       let column = '';
-      column += `${nameValue}  ${typeValue} `;
-      if (widthValue > 0) {
-        column += `(${widthValue}) `;
+      column += `${column_name}  ${column_type} `;
+      if (column_length > 0) {
+        column += `(${column_length}) `;
       }
-      if (primaryKey) {
+      if (primaryKey === index) {
         column += 'PRIMARY KEY';
       }
       return column;
     })
     .join(', ');
+
+  const tableName = JSON.parse(columns).slice(-1)[0].table_name;
+  console.log(cols);
+
   return `CREATE TABLE ${tableName} (${cols})`;
+};
+
+const genQueryDropTable = (tableName) => {
+  return `DROP TABLE ${tableName}`;
+};
+
+const genQueryInsertTable = (table, columnsData) => {
+  let columns = columnsData.map((item) => Object.keys(item)).toString();
+  let values = columnsData.map((item) => Object.values(item)).map((val) => `'${val}'`);
+
+  return `INSERT INTO ${table} (${columns}) VALUES (${values})`;
 };
 
 const genQueryGetColumns = (tableName) => {
   return `SELECT column_name, data_type, character_maximum_length, column_default FROM information_schema.columns where table_name='${tableName}' and table_schema='public'`;
 };
 
-const genQueryDropTable = (tableName) => {
-  return `DROP TABLE ${tableName}`;
+const genQuerySelectAllTable = (tableName) => {
+  return `SELECT * from ${tableName}`;
 };
 
 module.exports = {
@@ -55,4 +71,6 @@ module.exports = {
   genQueryCreateTable,
   genQueryDropTable,
   genQueryGetColumns,
+  genQueryInsertTable,
+  genQuerySelectAllTable,
 };

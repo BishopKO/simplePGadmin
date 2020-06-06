@@ -11,6 +11,7 @@ import DatabaseDrop from 'components/Databases/DatabaseDrop/DatabaseDrop';
 import TableCreate from 'components/Tables/TableCreate/TableCreate';
 import TableInsert from 'components/Tables/TableInsert/TableInsert';
 import TableDrop from 'components/Tables/TableDrop/TableDrop';
+import TableSearchUpdate from 'components/Tables/TableSearchUpdate/TableSearchUpdate';
 
 import { Provider } from 'react-redux';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
@@ -29,6 +30,10 @@ const Root = () => {
               <Route path={'/tblCreate'} render={(props) => <TableCreate {...props} />} />
               <Route path={'/tblInsert/:name'} render={(props) => <TableInsert {...props} />} />
               <Route path={'/tblDrop/:name'} render={(props) => <TableDrop {...props} />} />
+              <Route
+                path={'/tblSearchUpdate/:name'}
+                render={(props) => <TableSearchUpdate {...props} />}
+              />
             </Switch>
           </BrowserRouter>
         </UserTemplate>

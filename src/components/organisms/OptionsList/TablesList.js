@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import goIcon from 'assets/goIcon.svg';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+
 import {
   StyledWrapper,
-  StyledGoButton,
   StyledSelect,
   StyledLi,
   StyledList,
@@ -17,24 +15,23 @@ class TablesList extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      activeElement: this.props.config.currentTbl,
       activeOption: 'tblCreate',
-      activeElement: '',
       options: [
         { value: 'tblOptions', name: 'Table options...' },
         { value: 'tblCreate', name: 'Create new table' },
         { value: 'tblInsert', name: 'Insert into table' },
-        { value: 'tblUpdate', name: 'Update table' },
-        { value: 'tblGrants', name: 'Set table grants' },
-        { value: 'tblShowSearch', name: 'Search in table' },
+        { value: 'tblSearchUpdate', name: 'Search/Update table' },
         { value: 'tblDrop', name: 'Drop table' },
       ],
     };
     this.createPathname = this.createPathname.bind(this);
+    this.handleUseOption = this.handleUseOption.bind(this);
   }
 
-  createPathname() {
-    const { activeOption, activeElement } = this.state;
-    switch (activeOption) {
+  createPathname(option) {
+    const { activeElement } = this.state;
+    switch (option) {
       case 'tblCreate':
         return '/tblCreate';
       case 'tblInsert':
@@ -43,41 +40,57 @@ class TablesList extends Component {
         return '/tblRename/' + activeElement;
       case 'tblDrop':
         return '/tblDrop/' + activeElement;
+      case 'tblSearchUpdate':
+        return '/tblSearchUpdate/' + activeElement;
       default:
         return '/';
     }
   }
+
+  handleUseOption = (item) => {
+    const path = this.createPathname(item);
+    this.props.history.push(path);
+  };
 
   createKey(value, index) {
     return `${index}_${value}`;
   }
 
   render() {
-    const { tables } = this.props;
+    const { tables, config } = this.props;
+
     return (
-      <StyledBorder label="Tables options...">
+      <StyledBorder label="TABLES">
         <StyledWrapper>
           <StyledMenuWrapper>
-            <StyledSelect className="options">
+            <StyledSelect
+              onChange={(element) => this.handleUseOption(element.target.value)}
+              disabled={!config.currentDb}
+            >
               {this.state.options.map((item, index) => (
                 <option
                   key={this.createKey(item, index)}
                   value={item.value}
-                  onClick={() => this.setState({ activeOption: item.value })}
+                  onClick={() => this.handleUseOption(item.value)}
+                  disabled={
+                    item.value !== 'tblOptions' && item.value !== 'tblCreate' && !config.currentTbl
+                  }
                 >
                   {item.name}
                 </option>
               ))}
             </StyledSelect>
-            <StyledGoButton as={Link} to={this.createPathname} icon={goIcon} />
           </StyledMenuWrapper>
 
           <StyledList>
             {tables.map((item, index) => (
               <StyledLi
                 key={this.createKey(item, index)}
-                onClick={() => this.setState({ activeElement: item })}
-                active={this.state.activeElement === item}
+                onClick={() => {
+                  this.setState({ activeElement: item });
+                  config.currentTbl = item;
+                }}
+                active={config.currentTbl === item}
               >
                 {item}
               </StyledLi>

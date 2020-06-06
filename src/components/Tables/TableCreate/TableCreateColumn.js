@@ -7,11 +7,9 @@ class TableCreateColumn extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      nameValue: null,
-      widthValue: 0,
-      lengthValue: 0,
+      typeValue: null,
       types: [
-        '...',
+        'Types...',
         'SERIAL',
         'INTEGER',
         'DECIMAL',
@@ -32,8 +30,16 @@ class TableCreateColumn extends Component {
     return `${index}_${value}`;
   };
 
-  handleOnChange = () => {
-    console.log(1);
+  handleSelectTypeOnChange = (colNumber, typeValue) => {
+    let currentSession = JSON.parse(sessionStorage.getItem('columns'));
+    if (!currentSession[colNumber]) {
+      currentSession[colNumber] = {};
+    }
+    currentSession[colNumber] = Object.assign(currentSession[colNumber], {
+      column_type: typeValue,
+    });
+    sessionStorage.setItem('columns', JSON.stringify(currentSession));
+    this.setState({ typeValue: typeValue });
   };
 
   render() {
@@ -48,13 +54,15 @@ class TableCreateColumn extends Component {
           name="column_name"
           onChange={(el) => this.setState({ nameValue: el.target.value })}
         />
-        <BorderWithLabel width="70px" height="25px" label="type">
-          <StyledSelect>
+        <BorderWithLabel width="70px" label="type">
+          <StyledSelect
+            onChange={(element) => this.handleSelectTypeOnChange(colNumber, element.target.value)}
+          >
             {this.state.types.map((item, index) => (
               <option
                 key={this.createKey(item, index)}
                 value={item}
-                onClick={(element) => this.setState({ typeValue: element.target.value })}
+                // onClick={(element) => this.handleSelectOnChange(colNumber, element.target.value)}
               >
                 {item}
               </option>
@@ -71,14 +79,13 @@ class TableCreateColumn extends Component {
         />
         <InputWithBorder
           colNumber={colNumber}
-          name="pk"
+          name="column_pk"
           label="PK"
           width="20px"
           height="20px"
           type="checkbox"
           setPrimaryKey={() => setPrimaryKey(colNumber)}
           checked={isPrimaryKey}
-          updateOnChange={this.handleOnChange}
         />
       </StyledAddColumn>
     );

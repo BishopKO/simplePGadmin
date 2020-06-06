@@ -9,8 +9,6 @@ import { connect } from 'react-redux';
 
 const StyledWrapper = styled.div`
   position: relative;
-  height: 100%;
-  width: 100%;
   padding: 10px;
   display: grid;
   grid-template-columns: 50% 50%;
@@ -19,17 +17,13 @@ const StyledWrapper = styled.div`
 `;
 
 class MainWindowTemplate extends Component {
-  constructor() {
-    super();
-    this.state = {
-      currentView: '',
-    };
-  }
-
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { loggedIn, config, getDatabases } = this.props;
+    const { loggedIn, config, getDatabases, errors } = this.props;
     if (loggedIn) {
       getDatabases(config);
+    }
+    if (prevProps.errors.length < errors.length) {
+      console.log(errors.slice(-1));
     }
   }
 
@@ -39,8 +33,8 @@ class MainWindowTemplate extends Component {
       <StyledWrapper>
         {children}
         <PageContext.Provider>
-          <DatabasesList />
-          <TablesList />
+          <DatabasesList history={this.props.history} />
+          <TablesList history={this.props.history} />
         </PageContext.Provider>
       </StyledWrapper>
     );

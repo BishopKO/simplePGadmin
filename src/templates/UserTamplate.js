@@ -7,9 +7,9 @@ import { connect } from 'react-redux';
 
 const StyledWrapper = styled.div`
   display: grid;
-  width: 800px;
-  height: 400px;
-  grid-template-columns: 170px 1fr;
+  width: 670px;
+  height: 100%;
+  grid-template-columns: 150px 1fr;
   grid-gap: 0;
   border-radius: 5px;
   border: ${({ theme }) => `3px solid ${theme.border}`};

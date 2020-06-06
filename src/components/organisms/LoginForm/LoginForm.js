@@ -48,6 +48,7 @@ class LoginForm extends Component {
               name="user"
               type="text"
               width="100%"
+              height="2.5rem"
               activeUpdate={false}
             />
             <InputWithBorder
@@ -55,6 +56,7 @@ class LoginForm extends Component {
               name="password"
               type="password"
               width="100%"
+              height="2.5rem"
               activeUpdate={false}
             />
             <InputWithBorder
@@ -62,6 +64,7 @@ class LoginForm extends Component {
               name="host"
               type="text"
               width="100%"
+              height="2.5rem"
               activeUpdate={false}
             />
           </StyledFormInputsWrapper>

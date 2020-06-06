@@ -1,9 +1,11 @@
 const initState = {
-  config: { user: '', password: '', host: '', database: 'postgres', currentDb: '' },
+  config: { user: '', password: '', host: '', database: 'postgres', currentDb: '', currentTbl: '' },
   loggedIn: false,
   loginCount: 0,
   databases: [],
   tables: [],
+  columnsData: [],
+  columnsNames: [],
   errors: [],
 };
 
@@ -75,6 +77,17 @@ const myReducer = (state = initState, action) => {
       return {
         ...state,
         createTable: newPrimaryKey,
+      };
+    case 'SELECT_ALL_SUCCESS':
+      return {
+        ...state,
+        columnsNames: Object.keys(action.payload.data.data[0]),
+        columnsData: action.payload.data.data.map((item) => Object.values(item)),
+      };
+    case 'SELECT_ALL_ERROR':
+      return {
+        ...state,
+        errors: state.errors.concat([action.payload.error]),
       };
 
     default:
