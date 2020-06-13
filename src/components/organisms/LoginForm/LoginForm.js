@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
-import InputWithBorder from 'components/organisms/InputWithBorder/InputWithBorder';
+import React, { useState, useEffect } from 'react';
+
+import StyledInput from 'components/atoms/StyledInput/StyledInput';
+import BorderWithLabel from 'components/atoms/BorderWithLabel/BorderWithLabel';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { authenticateAction } from 'actions';
@@ -10,72 +12,63 @@ import {
   StyledFormInputsWrapper,
 } from './loginFormStyles';
 
-class LoginForm extends Component {
-  handleCheckLogin = () => {
-    const { config, authUser } = this.props;
+const LoginForm = ({ config, loggedIn, authUser, loginCount }) => {
+  const [loginForm, setLoginForm] = useState({});
 
-    document.querySelectorAll('.LoginForm InputWithBorder').forEach((item) => {
-      config[item.name] = item.value;
-    });
-    authUser(config);
-    console.log(config);
+  const handleCheckLogin = () => {
+    // const { config, authUser } = this.props;
+    // document.querySelectorAll('.LoginForm InputWithBorder').forEach((item) => {
+    //   config[item.name] = item.value;
+    // });
+    // authUser(config);
+    console.log(loginForm);
   };
 
-  componentDidMount() {
-    const { authUser } = this.props;
-    const config = { user: 'bishop', password: 'ghost14', database: 'postgres', host: '127.0.0.1' };
-    authUser(config);
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const { loginCount } = this.props;
-    console.log(loginCount);
-    if (prevProps.loginCount < loginCount) {
-      alert('Login Fail!');
-    } else {
-      console.log(this.props.config);
+  useEffect(() => {
+    if (!loggedIn) {
+      const config = {
+        user: 'bishop',
+        password: 'ghost14',
+        database: 'postgres',
+        host: '127.0.0.1',
+      };
+      authUser(config);
     }
-  }
+  });
 
-  render() {
-    const { loggedIn } = this.props;
-    return (
-      <StyledWrapper>
-        <StyledForm className="LoginForm">
-          <StyledFormInputsWrapper>
-            <InputWithBorder
-              label="Username"
-              name="user"
-              type="text"
-              width="100%"
-              height="2.5rem"
-              activeUpdate={false}
-            />
-            <InputWithBorder
-              label="Password"
+  const handleSetLoginForm = (element) => {
+    const { name, value } = element.target;
+    console.log(name, value);
+    setLoginForm(Object.assign(loginForm, { [name]: value }));
+  };
+
+  return (
+    <StyledWrapper>
+      <StyledForm className="LoginForm">
+        <StyledFormInputsWrapper>
+          <BorderWithLabel label="Username" width="100%">
+            <StyledInput name="user" onChange={(element) => handleSetLoginForm(element)} />
+          </BorderWithLabel>
+
+          <BorderWithLabel label="password" width="100%">
+            <StyledInput
               name="password"
               type="password"
-              width="100%"
-              height="2.5rem"
-              activeUpdate={false}
+              onChange={(element) => handleSetLoginForm(element)}
             />
-            <InputWithBorder
-              label="Host"
-              name="host"
-              type="text"
-              width="100%"
-              height="2.5rem"
-              activeUpdate={false}
-            />
-          </StyledFormInputsWrapper>
-          <StyledButton type="button" onClick={this.handleCheckLogin}>
-            {loggedIn ? 'Disconnect' : 'Connect'}
-          </StyledButton>
-        </StyledForm>
-      </StyledWrapper>
-    );
-  }
-}
+          </BorderWithLabel>
+
+          <BorderWithLabel label="Host" width="100%">
+            <StyledInput name="host" onChange={(element) => handleSetLoginForm(element)} />
+          </BorderWithLabel>
+        </StyledFormInputsWrapper>
+        <StyledButton type="button" onClick={() => console.log(loginForm)}>
+          {loggedIn ? 'Disconnect' : 'Connect'}
+        </StyledButton>
+      </StyledForm>
+    </StyledWrapper>
+  );
+};
 
 LoginForm.propTypes = {
   config: PropTypes.object.isRequired,

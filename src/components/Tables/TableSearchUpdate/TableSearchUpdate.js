@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Modal from 'components/atoms/Modal/Modal';
 
+import Modal from 'components/atoms/Modal/Modal';
 import MainWindowTemplate from 'templates/MainWindowTemplate';
 import StyledTitle from 'components/atoms/StyledTitle/StyledTitle';
+import BorderWithLabel from 'components/atoms/BorderWithLabel/BorderWithLabel';
+import StyledInput from 'components/atoms/StyledInput/StyledInput';
 
-import InputWithBorder from 'components/organisms/InputWithBorder/InputWithBorder';
 import trashIcon from 'assets/trashIcon.svg';
 import editIcon from 'assets/editIcon.svg';
 import store from 'store';
-import { connect } from 'react-redux';
 
+import { connect } from 'react-redux';
 import { StyledTable, StyledIconButton } from './TableSearchUpdateStyles';
 import { getTableAllDataAction, getTableWhereDataAction } from 'actions/index';
-import createKey from 'helpers/genReactKey';
+import createKey from 'utils/genReactKey';
 
 class TableSearchUpdate extends Component {
   constructor() {
@@ -72,13 +73,11 @@ class TableSearchUpdate extends Component {
           <StyledTitle className="search_input" fontSize="1.5rem">
             Table <span>{currentTbl}</span> entries:
           </StyledTitle>
-          <InputWithBorder
-            className="SearchInput"
-            height="25px"
-            width="80%"
-            label="Search in table"
-            placeholder="column_name=value (% -any char)"
-          />
+
+          <BorderWithLabel label="Search..." width="80%">
+            <StyledInput placeholder="column_name=value (% -any char)" />
+          </BorderWithLabel>
+
           <StyledTable>
             <tbody>
               <tr>

@@ -1,113 +1,95 @@
-import React, { Component, createRef } from 'react';
-import withContext from 'hoc/withContext';
+import React, { useState } from 'react';
+
 import PropTypes from 'prop-types';
 
 import MainWindowTemplate from 'templates/MainWindowTemplate';
 import Modal from 'components/atoms/Modal/Modal';
+
 import addIcon from 'assets/addIcon.svg';
 import trashIcon from 'assets/trashIcon.svg';
 import saveIcon from 'assets/saveIcon.svg';
 import TableCreateColumn from './TableCreateColumn';
 import IconButton from 'components/atoms/IconButton/IconButton';
-import InputWithBorder from 'components/organisms/InputWithBorder/InputWithBorder';
+import StyledInput from 'components/atoms/StyledInput/StyledInput';
+import BorderWithLabel from 'components/atoms/BorderWithLabel/BorderWithLabel';
 
 import { connect } from 'react-redux';
 import { StyledTitle, StyledButtonsWrapper } from './tableCreateStyles';
 import { createTableAction, getTablesAction } from 'actions';
-import createKey from 'helpers/genReactKey';
+import store from 'store';
+import createKey from 'utils/genReactKey';
+import columnTypes from './columnTypes';
 
-class TableCreate extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      columns: 0,
-      showGrants: false,
-      tableName: '',
-      primaryKeyColumn: null,
-    };
-    this.handleCreateNewColumn = this.handleCreateNewColumn.bind(this);
-    this.handleRemoveColumns = this.handleRemoveColumns.bind(this);
-    this.handleSaveTable = this.handleSaveTable.bind(this);
-    this.setPrimaryKeyColumn = this.setPrimaryKeyColumn.bind(this);
-  }
+const TableCreate = ({ history, config, createTableForm, createTable, getTables }) => {
+  const [columns, setColumnsNumber] = useState(0);
+  const [primaryKeyColumn, setPrimaryKey] = useState(null);
 
-  setPrimaryKeyColumn(val) {
-    if (val !== this.state.primaryKeyColumn) {
-      this.setState({ primaryKeyColumn: val });
+  const setPrimaryKeyColumn = (columnNumber) => {
+    if (primaryKeyColumn !== columnNumber) {
+      setPrimaryKey(columnNumber);
     } else {
-      this.setState({ primaryKeyColumn: null });
+      setPrimaryKey(null);
     }
-  }
-
-  handleCreateNewColumn() {
-    this.setState({
-      columns: this.state.columns + 1,
-    });
-  }
-
-  handleRemoveColumns() {
-    this.setState({ columns: 0 });
-  }
-
-  handleSaveTable = () => {
-    const { createTable, getDatabaseTables, config, history, rowToEdit } = this.props;
-    console.log(rowToEdit);
-    // const tableData = JSON.parse(sessionStorage.getItem('columns'));
-    // config.columns = JSON.stringify(Object.entries(tableData).map(([key, val]) => val));
-    // config.primaryKey = this.state.primaryKeyColumn;
-    //
-    // createTable(config)
-    //   .then(() => getDatabaseTables(config))
-    //   .then(() => history.push('/'));
   };
 
-  render() {
-    const { types } = this.props.context;
-    const { currentDb } = this.props.config;
-    return (
-      <MainWindowTemplate>
-        <Modal table width="500px">
-          <StyledTitle>
-            CREATE NEW TABLE IN DATABASE <span>{currentDb}</span>
-          </StyledTitle>
+  const handleCreateNewColumn = () => {
+    setColumnsNumber(columns + 1);
+  };
 
-          <StyledButtonsWrapper>
-            <InputWithBorder
-              withRedux
-              name="table_name"
-              colNumber="table_name"
-              type="text"
-              label="Table name"
-              width="50%"
+  const handleRemoveColumns = () => {
+    setColumnsNumber(0);
+    setPrimaryKey(null);
+  };
+
+  const handleSaveTable = () => {
+    config.primaryKey = primaryKeyColumn;
+    config.tableData = createTableForm;
+
+    createTable(config)
+      .then(() => getTables(config))
+      .then(() => history.push('/'));
+  };
+
+  const handleUpdateFormData = (element) => {
+    const name = element.target.name;
+    const value = element.target.value;
+    store.dispatch({ type: 'CREATE_TABLE_FORM', payload: { [name]: value } });
+  };
+
+  const { currentDb } = config;
+  return (
+    <MainWindowTemplate>
+      <Modal table width="500px">
+        <StyledTitle>
+          CREATE NEW TABLE IN DATABASE <span>{currentDb}</span>
+        </StyledTitle>
+
+        <StyledButtonsWrapper>
+          <BorderWithLabel label="Table name">
+            <StyledInput name="table_name" onChange={(element) => handleUpdateFormData(element)} />
+          </BorderWithLabel>
+          <div>
+            <IconButton label="Add" icon={addIcon} onClick={handleCreateNewColumn} />
+            <IconButton label="Reset" icon={trashIcon} onClick={handleRemoveColumns} />
+            <IconButton label="Save" icon={saveIcon} onClick={handleSaveTable} marginRight="0" />
+          </div>
+        </StyledButtonsWrapper>
+
+        {Array(columns)
+          .fill(null)
+          .map((item, index) => (
+            <TableCreateColumn
+              colNumber={index}
+              key={createKey('column', index)}
+              setPrimaryKey={() => setPrimaryKeyColumn(index)}
+              isPrimaryKey={index === primaryKeyColumn}
+              types={columnTypes}
             />
-            <div>
-              <IconButton label="Add" icon={addIcon} onClick={this.handleCreateNewColumn} />
-              <IconButton label="Reset" icon={trashIcon} onClick={this.handleRemoveColumns} />
-              <IconButton
-                label="Save"
-                icon={saveIcon}
-                onClick={this.handleSaveTable}
-                marginRight="0"
-              />
-            </div>
-          </StyledButtonsWrapper>
-
-          {Array(this.state.columns)
-            .fill(null)
-            .map((item, index) => (
-              <TableCreateColumn
-                colNumber={index}
-                key={createKey('column', index)}
-                setPrimaryKey={() => this.setPrimaryKeyColumn(index)}
-                isPrimaryKey={index === this.state.primaryKeyColumn}
-                types={types}
-              />
-            ))}
-        </Modal>
-      </MainWindowTemplate>
-    );
-  }
-}
+          ))}
+      </Modal>
+    </MainWindowTemplate>
+  );
+};
 
 TableCreate.propTypes = {
   createTable: PropTypes.func.isRequired,
@@ -119,12 +101,12 @@ TableCreate.propTypes = {
 
 const mapDispatchToProps = (dispatch) => ({
   createTable: (config) => dispatch(createTableAction(config)),
-  getDatabaseTables: (config) => dispatch(getTablesAction(config)),
+  getTables: (config) => dispatch(getTablesAction(config)),
 });
 
 const mapStateToProps = (state) => {
-  const { config, rowToEdit } = state;
-  return { config, rowToEdit };
+  const { config, createTbl, createTableForm } = state;
+  return { config, createTbl, createTableForm };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withContext(TableCreate));
+export default connect(mapStateToProps, mapDispatchToProps)(TableCreate);

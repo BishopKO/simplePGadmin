@@ -5,8 +5,9 @@ import TablesList from 'components/OptionsList/TablesList';
 import StyledSpinner from 'components/atoms/Spinner/Spinner';
 
 import { PageContext } from 'context';
-import { getDatabasesAction } from 'actions';
+import { getDatabasesAction, getTablesAction } from 'actions';
 import { connect } from 'react-redux';
+import store from 'store';
 
 const StyledWrapper = styled.div`
   position: relative;
@@ -19,7 +20,7 @@ const StyledWrapper = styled.div`
 
 class MainWindowTemplate extends Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { loggedIn, config, getDatabases, errors, loading } = this.props;
+    const { loggedIn, config, getDatabases, errors, loading, update, getTables } = this.props;
     if (loggedIn) {
       getDatabases(config);
     }
@@ -45,12 +46,13 @@ class MainWindowTemplate extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { config, loggedIn, errors, loading } = state;
-  return { config, loggedIn, errors, loading };
+  const { config, loggedIn, errors, loading, update } = state;
+  return { config, loggedIn, errors, loading, update };
 };
 
 const mapDispatchToProps = (dispatch) => ({
   getDatabases: (config) => dispatch(getDatabasesAction(config)),
+  getTables: (config) => dispatch(getTablesAction(config)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainWindowTemplate);

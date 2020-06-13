@@ -1,67 +1,87 @@
-import React, { Component } from 'react';
-import { StyledAddColumn, StyledSelect } from './tableCreateStyles';
-import InputWithBorder from 'components/organisms/InputWithBorder/InputWithBorder';
+import React, { useState, useEffect, useReducer } from 'react';
 import BorderWithLabel from 'components/atoms/BorderWithLabel/BorderWithLabel';
-import createKey from 'helpers/genReactKey';
+import StyledInput from 'components/atoms/StyledInput/StyledInput';
+import { StyledAddColumn, StyledSelect } from './tableCreateStyles';
+import store from 'store';
 
-class TableCreateColumn extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      type: null,
-      types: [
-        'Types...',
-        'SERIAL',
-        'INTEGER',
-        'DECIMAL',
-        'NUMERIC',
-        'MONEY',
-        'VARCHAR',
-        'CHAR',
-        'TEXT',
-        'TIME',
-        'DATE',
-        'TIMESTAMP',
-        'BOOL',
-      ],
+import createKey from 'utils/genReactKey';
+import columnTypes from './columnTypes';
+
+const TableCreateColumn = ({ colNumber, isPrimaryKey, setPrimaryKey }) => {
+  const [lengthDisabled, setLengthDisabled] = useState(true);
+
+  const initState = {
+    column_name: '',
+    column_type: '',
+    column_length: '',
+  };
+
+  const formReducer = (state, { field, value }) => {
+    return {
+      ...state,
+      [field]: value,
     };
-  }
+  };
 
-  render() {
-    const { colNumber, isPrimaryKey, setPrimaryKey } = this.props;
+  const [state, dispatch] = useReducer(formReducer, initState);
 
-    return (
-      <StyledAddColumn>
-        <InputWithBorder withRedux colNumber={colNumber} name="name" />
-        <BorderWithLabel width="70px" label="type">
-          <StyledSelect onChange={(element) => this.setState({ type: element.target.value })}>
-            {this.state.types.map((item, index) => (
-              <option key={createKey(item, index)} value={item}>
-                {item}
-              </option>
-            ))}
-          </StyledSelect>
-        </BorderWithLabel>
-        <InputWithBorder
-          withRedux
-          colNumber={colNumber}
-          name="length"
-          width="50px"
-          disabled={this.state.type !== 'VARCHAR' && this.state.type !== 'CHAR'}
+  useEffect(() => {
+    store.dispatch({ type: 'CREATE_TABLE_FORM', payload: { [colNumber]: state } });
+  });
+
+  const handleUpdateFormData = (element) => {
+    const name = element.target.name;
+    const value = element.target.value;
+
+    if (name === 'column_type') {
+      if (['VARCHAR', 'CHAR'].includes(value)) {
+        setLengthDisabled(false);
+      } else {
+        setLengthDisabled(true);
+        dispatch({ field: 'column_length', value: '' });
+      }
+    }
+    dispatch({ field: name, value: value });
+  };
+
+  const { column_name, column_length } = state;
+  return (
+    <StyledAddColumn>
+      <BorderWithLabel label="Column name">
+        <StyledInput
+          name="column_name"
+          value={column_name}
+          onChange={(element) => handleUpdateFormData(element)}
         />
-        <InputWithBorder
-          withRedux
-          colNumber={colNumber}
-          name="pk"
-          width="20px"
-          height="20px"
+      </BorderWithLabel>
+
+      <BorderWithLabel width="70px" label="type">
+        <StyledSelect name="column_type" onChange={(element) => handleUpdateFormData(element)}>
+          {columnTypes.map((item, index) => (
+            <option key={createKey(item, index)} value={item}>
+              {item}
+            </option>
+          ))}
+        </StyledSelect>
+      </BorderWithLabel>
+
+      <BorderWithLabel label="Length" width="50px" disabled={lengthDisabled}>
+        <StyledInput
+          value={column_length}
+          name="column_length"
+          onChange={(element) => handleUpdateFormData(element)}
+        />
+      </BorderWithLabel>
+
+      <BorderWithLabel label="PK" width="20px">
+        <StyledInput
           type="checkbox"
-          setPrimaryKey={() => setPrimaryKey(colNumber)}
           checked={isPrimaryKey}
+          onClick={() => setPrimaryKey(colNumber)}
         />
-      </StyledAddColumn>
-    );
-  }
-}
+      </BorderWithLabel>
+    </StyledAddColumn>
+  );
+};
 
 export default TableCreateColumn;

@@ -6,17 +6,12 @@ import MainWindowTemplate from 'templates/MainWindowTemplate';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { dropTableAction, getTablesAction } from 'actions';
-import {
-  StyledButton,
-  StyledQuestion,
-  StyledButtonsWrapper,
-  StyledWarning,
-} from './tableDropStyles';
+import { StyledQuestion, StyledButtonsWrapper, StyledWarning } from './tableDropStyles';
 import Button from 'components/atoms/Button/Button';
 
-const TableDrop = ({ match, dropTable, getTables, config }) => {
-  const tableName = match.params.name;
+const TableDrop = ({ dropTable, config, getTables }) => {
   let history = useHistory();
+  const tableName = config.currentTbl;
 
   const handleDropTable = () => {
     config.tableName = tableName;

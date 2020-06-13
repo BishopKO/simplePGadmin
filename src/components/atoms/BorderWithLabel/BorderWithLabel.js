@@ -7,8 +7,7 @@ const BorderWithLabel = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-  // border: ${({ theme }) => `1px solid ${theme.border}`};
+  justify-content: center;  
   border: 1px solid lightgrey;
   border-radius: 3px;
 

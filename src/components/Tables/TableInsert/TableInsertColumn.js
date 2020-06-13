@@ -1,41 +1,45 @@
-import React, { Component } from 'react';
-import InputWithBorder from 'components/organisms/InputWithBorder/InputWithBorder';
+import React, { useState, useEffect } from 'react';
+import StyledInput from 'components/atoms/StyledInput/StyledInput';
+import BorderWithLabel from 'components/atoms/BorderWithLabel/BorderWithLabel';
 import { StyledAddColumn } from './tableInsertStyles';
 
-class InsertColumn extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: '',
-    };
-  }
+const InsertColumn = ({ name, type, length, colNumber }) => {
+  const [formData, setFormData] = useState({});
 
-  render() {
-    const { type, length, name, autoIncrement, colNumber, withRedux } = this.props;
+  const handleOnChange = (element) => {
+    const name = element.target.name;
+    const value = element.target.value;
+    setFormData({ [name]: value });
+  };
 
-    return (
-      <StyledAddColumn>
-        <InputWithBorder
-          withRedux
-          colNumber={colNumber}
-          label={name}
-          defaultValue={autoIncrement ? 'AUTO' : null}
+  useEffect(() => {
+    console.log(formData);
+  });
+
+  return (
+    <StyledAddColumn>
+      <BorderWithLabel label={name}>
+        <StyledInput
           name={name}
-          disabled={autoIncrement}
+          defaultValue={type === 'SERIAL' ? 'AUTO' : null}
+          disabled={type === 'SERIAL'}
+          onChange={(element) => handleOnChange(element)}
         />
-        <InputWithBorder name="type" defaultValue={type} disabled width="70px" centerText />
-        <InputWithBorder
-          name="length"
-          activeUpdate
-          width="50px"
-          defaultValue={length}
-          disabled
-          centerText
-        />
-        <InputWithBorder name="pk" width="20px" height="20px" type="checkbox" disabled />
-      </StyledAddColumn>
-    );
-  }
-}
+      </BorderWithLabel>
+
+      <BorderWithLabel label="type" width="70px">
+        <StyledInput name="type" defaultValue={type} disabled centerText />
+      </BorderWithLabel>
+
+      <BorderWithLabel label="length" width="50px">
+        <StyledInput name="length" defaultValue={length} disabled centerText />
+      </BorderWithLabel>
+
+      <BorderWithLabel label="PK" width="20px">
+        <StyledInput name="length" defaultValue={length} type="checkbox" disabled />
+      </BorderWithLabel>
+    </StyledAddColumn>
+  );
+};
 
 export default InsertColumn;

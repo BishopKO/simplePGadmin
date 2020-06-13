@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
+
 import Modal from 'components/atoms/Modal/Modal';
-import { createDatabaseAction, getDatabasesAction } from 'actions';
+import Button from 'components/atoms/Button/Button';
+import MainWindowTemplate from 'templates/MainWindowTemplate';
+
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { StyledInput, StyledTitle } from './databaseCreateStyles';
-import Button from 'components/atoms/Button/Button';
-import MainWindowTemplate from 'templates/MainWindowTemplate';
+import { createDatabaseAction, getDatabasesAction } from 'actions';
 
 const DatabaseCreate = ({ config, createDatabase, getDatabases }) => {
   const [dbName, setdbName] = useState('');

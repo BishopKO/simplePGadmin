@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import createKey from 'helpers/genReactKey';
+import createKey from 'utils/genReactKey';
+import tablesListOptions from 'utils/tablesListOptions';
 import { connect } from 'react-redux';
 
 import {
@@ -18,40 +19,16 @@ class TablesList extends Component {
     this.state = {
       activeElement: this.props.config.currentTbl,
       activeOption: 'tblCreate',
-      options: [
-        { value: 'tblOptions', name: 'Table options...' },
-        { value: 'tblCreate', name: 'Create new table' },
-        { value: 'tblRename', name: 'Rename table' },
-        { value: 'tblInsert', name: 'Insert into table' },
-        { value: 'tblSearchUpdate', name: 'Search/Update table' },
-        { value: 'tblDrop', name: 'Drop table' },
-      ],
+      options: tablesListOptions,
     };
-    this.createPathname = this.createPathname.bind(this);
     this.handleUseOption = this.handleUseOption.bind(this);
   }
 
-  createPathname(option) {
-    const { activeElement } = this.state;
-    switch (option) {
-      case 'tblCreate':
-        return '/tblCreate';
-      case 'tblInsert':
-        return '/tblInsert/' + activeElement;
-      case 'tblRename':
-        return '/tblRename/';
-      case 'tblDrop':
-        return '/tblDrop/' + activeElement;
-      case 'tblSearchUpdate':
-        return '/tblSearchUpdate/' + activeElement;
-      default:
-        return '/';
-    }
-  }
-
-  handleUseOption = (item) => {
-    const path = this.createPathname(item);
-    this.props.history.push({ pathname: path, state: { tableName: this.state.activeElement } });
+  handleUseOption = (option) => {
+    this.props.history.push({
+      pathname: option,
+      state: { tblName: this.state.activeElement },
+    });
   };
 
   render() {
@@ -69,7 +46,6 @@ class TablesList extends Component {
                 <option
                   key={createKey(item, index)}
                   value={item.value}
-                  onClick={() => this.handleUseOption(item.value)}
                   disabled={
                     item.value !== 'tblOptions' && item.value !== 'tblCreate' && !config.currentTbl
                   }

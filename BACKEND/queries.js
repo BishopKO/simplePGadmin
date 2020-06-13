@@ -1,6 +1,6 @@
 // DATABASES
 const genQueryGetDatabases = () => {
-  return "SELECT datname FROM pg_database";
+  return 'SELECT datname FROM pg_database';
 };
 
 const genQueryGetTables = (databaseName) => {
@@ -20,27 +20,28 @@ const genQueryDropDatabase = (databaseName) => {
 };
 
 // TABLES
-const genQueryCreateTable = (columns, primaryKey) => {
-  const cols = JSON.parse(columns)
+const genQueryCreateTable = (tableData, primaryKey) => {
+  const tableName = tableData.table_name;
+
+  let data = Object.values(tableData)
     .slice(0, -1)
-    .map((item, index) => {
-      let { column_name, column_type, column_length } = item;
-      let column = "";
-      column += `${column_name}  ${column_type} `;
-      if (column_length > 0) {
-        column += `(${column_length}) `;
+    .map(({ column_name, column_type, column_length }, index) => {
+      let column = `${column_name} ${column_type}`;
+      if (parseInt(column_length) > 0) {
+        column += `(${column_length})`;
       }
-      if (primaryKey === index) {
-        column += "PRIMARY KEY";
+      if (index === primaryKey) {
+        column += ' PRIMARY KEY ';
       }
       return column;
     })
-    .join(", ");
+    .toString();
 
-  const tableName = JSON.parse(columns).slice(-1)[0].table_name;
-  console.log(cols);
+  return `CREATE TABLE ${tableName} (${data})`;
+};
 
-  return `CREATE TABLE ${tableName} (${cols})`;
+const genQueryRenameTable = (currentTbl, newTableName) => {
+  return `ALTER TABLE ${currentTbl} RENAME TO ${newTableName}`;
 };
 
 const genQueryDropTable = (tableName) => {
@@ -54,7 +55,7 @@ const genQueryInsertTable = (table, columnsData) => {
   return `INSERT INTO ${table} (${columns}) VALUES (${values})`;
 };
 
-const genQueryGetColumns = (tableName) => {
+const genQueryGetTableSchema = (tableName) => {
   return `SELECT column_name, data_type, character_maximum_length, column_default FROM information_schema.columns where table_name='${tableName}' and table_schema='public'`;
 };
 
@@ -64,7 +65,7 @@ const genQuerySelectAllTable = (tableName) => {
 
 const genQuerySelectWhere = (tableName, searchColumn, searchValue) => {
   console.log(searchValue);
-  if (searchValue.indexOf("%") === -1) {
+  if (searchValue.indexOf('%') === -1) {
     return `SELECT * FROM ${tableName} WHERE ${searchColumn}='${searchValue}'`;
   } else {
     return `SELECT * FROM ${tableName} WHERE ${searchColumn} LIKE '${searchValue}'`;
@@ -73,10 +74,11 @@ const genQuerySelectWhere = (tableName, searchColumn, searchValue) => {
 
 const genQueryUpdateRow = (tableName, oldRowData, newRowData) => {
   const newValues = Object.entries(newRowData).map(([name, value]) => `${name}='${value}'`);
-  const whereValues = Object.entries(oldRowData).map(([name, value]) => `${name}='${value}'`).join(" AND ");
+  const whereValues = Object.entries(oldRowData)
+    .map(([name, value]) => `${name}='${value}'`)
+    .join(' AND ');
 
   return `UPDATE ${tableName} set ${newValues} where ${whereValues}`;
-
 };
 
 module.exports = {
@@ -86,10 +88,11 @@ module.exports = {
   genQueryRenameDatabase,
   genQueryDropDatabase,
   genQueryCreateTable,
+  genQueryRenameTable,
   genQueryDropTable,
-  genQueryGetColumns,
+  genQueryGetTableSchema,
   genQueryInsertTable,
   genQuerySelectAllTable,
   genQuerySelectWhere,
-  genQueryUpdateRow
+  genQueryUpdateRow,
 };

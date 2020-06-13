@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
+
 import Modal from 'components/atoms/Modal/Modal';
 import MainWindowTemplate from 'templates/MainWindowTemplate';
-import InputWithBorder from 'components/organisms/InputWithBorder/InputWithBorder';
-import { StyledTitle, StyledButtonsWrapper } from './rowDetailsStyles';
 import IconButton from 'components/atoms/IconButton/IconButton';
 import Button from 'components/atoms/Button/Button';
+import StyledInput from 'components/atoms/StyledInput/StyledInput';
+import BorderWithLabel from 'components/atoms/BorderWithLabel/BorderWithLabel';
 import saveIcon from 'assets/saveIcon.svg';
+
+import { StyledTitle, StyledButtonsWrapper } from './rowDetailsStyles';
 import { updateRowAction } from 'actions';
 import { connect } from 'react-redux';
 
@@ -47,13 +50,9 @@ const RowDetails = ({ location, history, config, rowToEdit, updateRow }) => {
         </StyledButtonsWrapper>
         {Object.entries(rowToEdit).map(([name, value]) => (
           <StyledRowsWrapper>
-            <InputWithBorder
-              width="100%"
-              name={name}
-              defaultValue={value}
-              withRedux
-              disabled={value === 'pk'}
-            />
+            <BorderWithLabel label={name}>
+              <StyledInput defaultValue={value === 'pk'} />
+            </BorderWithLabel>
           </StyledRowsWrapper>
         ))}
       </Modal>
