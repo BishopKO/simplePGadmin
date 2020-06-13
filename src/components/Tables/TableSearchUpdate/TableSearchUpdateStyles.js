@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import IconButton from '../../atoms/IconButton/IconButton';
+import IconButton from 'components/atoms/IconButton/IconButton';
 
 export const StyledTable = styled.table`
   font-size: 1.3rem;

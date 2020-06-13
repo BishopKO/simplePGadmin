@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import DatabasesList from 'components/organisms/OptionsList/DatabasesList';
-import TablesList from 'components/organisms/OptionsList/TablesList';
+import DatabasesList from 'components/OptionsList/DatabasesList';
+import TablesList from 'components/OptionsList/TablesList';
 import StyledSpinner from 'components/atoms/Spinner/Spinner';
 
 import { PageContext } from 'context';

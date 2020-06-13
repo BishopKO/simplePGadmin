@@ -1,14 +1,14 @@
-const express = require('express');
-const cors = require('cors');
-const sendQuery = require('./sendQuery');
-const queries = require('./queries');
+const express = require("express");
+const cors = require("cors");
+const sendQuery = require("./sendQuery");
+const queries = require("./queries");
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
 // LOGIN
-app.post('/login', (req, res) => {
+app.post("/login", (req, res) => {
   const { user, password, host, database } = req.body.config;
   sendQuery
     .checkConfig({ user, password, host, database })
@@ -21,7 +21,7 @@ app.post('/login', (req, res) => {
 // --------DATABASES--------
 
 // GET DATABASES
-app.post('/databases', (req, res) => {
+app.post("/databases", (req, res) => {
   const { user, password, host, database } = req.body.config;
   sendQuery
     .sendQuery({ user, password, host, database }, queries.genQueryGetDatabases())
@@ -38,7 +38,7 @@ app.post('/databases', (req, res) => {
 });
 
 // CREATE DATABASE
-app.post('/create_database', (req, res) => {
+app.post("/create_database", (req, res) => {
   const { user, password, host, database, currentDb } = req.body.config;
   sendQuery
     .sendQuery({ user, password, host, database }, queries.genQueryCreateDatabase(currentDb))
@@ -46,7 +46,7 @@ app.post('/create_database', (req, res) => {
       if (resp.error) {
         throw Error(resp.error);
       } else {
-        res.json('Create database success.');
+        res.json("Create database success.");
       }
     })
     .catch((error) => {
@@ -55,7 +55,7 @@ app.post('/create_database', (req, res) => {
 });
 
 // DROP DATABASE
-app.post('/drop_database', (req, res) => {
+app.post("/drop_database", (req, res) => {
   const { user, password, host, database, currentDb } = req.body.config;
 
   sendQuery
@@ -69,13 +69,13 @@ app.post('/drop_database', (req, res) => {
 });
 
 // RENAME DATABASE
-app.post('/rename_database', (req, res) => {
+app.post("/rename_database", (req, res) => {
   const { user, password, host, database, currentDb, newDbName } = req.body.config;
 
   sendQuery
     .sendQuery(
       { user, password, host, database },
-      queries.genQueryRenameDatabase(currentDb, newDbName),
+      queries.genQueryRenameDatabase(currentDb, newDbName)
     )
     .then(() => {
       res.json(newDbName);
@@ -88,7 +88,7 @@ app.post('/rename_database', (req, res) => {
 // --------TABLES--------
 
 // GET TABLES
-app.post('/tables', (req, res) => {
+app.post("/tables", (req, res) => {
   const { user, password, host, currentDb } = req.body.config;
   const database = currentDb;
 
@@ -103,7 +103,7 @@ app.post('/tables', (req, res) => {
 });
 
 // #####CREATE TABLE#####
-app.post('/create_table', (req, res) => {
+app.post("/create_table", (req, res) => {
   let config = req.body.config;
   config.database = config.currentDb;
   console.log(config);
@@ -113,7 +113,7 @@ app.post('/create_table', (req, res) => {
     .sendQuery({ user, password, host, database }, queries.genQueryCreateTable(columns, primaryKey))
     .then((resp) => {
       console.log(resp);
-      res.json({ success: 'CREATE_TABLE_SUCCESS' });
+      res.json({ success: "CREATE_TABLE_SUCCESS" });
     })
     .catch((error) => {
       res.json({ error: error });
@@ -121,7 +121,7 @@ app.post('/create_table', (req, res) => {
 });
 
 // #####DROP TABLE#####
-app.post('/drop_table', (req, res) => {
+app.post("/drop_table", (req, res) => {
   const config = req.body.config;
   config.database = config.currentDb;
   const { user, password, host, database, tableName } = config;
@@ -137,7 +137,7 @@ app.post('/drop_table', (req, res) => {
 });
 
 // GET COLUMNS
-app.post('/get_columns', (req, res) => {
+app.post("/get_columns", (req, res) => {
   let config = req.body.config;
   config.database = config.currentDb;
   const { user, password, host, database, currentTbl } = config;
@@ -145,7 +145,7 @@ app.post('/get_columns', (req, res) => {
   sendQuery
     .sendQuery({ user, password, host, database }, queries.genQueryGetColumns(currentTbl))
     .then((resp) => {
-      res.json({ success: 'GET_COLUMNS_SUCCESS', data: resp });
+      res.json({ success: "GET_COLUMNS_SUCCESS", data: resp });
     })
     .catch((error) => {
       res.json({ error: error });
@@ -153,7 +153,7 @@ app.post('/get_columns', (req, res) => {
 });
 
 // INSERT INTO TABLE
-app.post('/insert_table', (req, res) => {
+app.post("/insert_table", (req, res) => {
   let config = req.body.config;
   config.database = config.currentDb;
   const { user, password, host, database, currentTbl, columnsData } = config;
@@ -161,10 +161,10 @@ app.post('/insert_table', (req, res) => {
   sendQuery
     .sendQuery(
       { user, password, host, database },
-      queries.genQueryInsertTable(currentTbl, columnsData),
+      queries.genQueryInsertTable(currentTbl, columnsData)
     )
     .then(() => {
-      res.json({ success: 'GET_COLUMNS_SUCCESS' });
+      res.json({ success: "GET_COLUMNS_SUCCESS" });
     })
     .catch((error) => {
       res.json({ error: error });
@@ -172,7 +172,7 @@ app.post('/insert_table', (req, res) => {
 });
 
 // GET ALL FROM TABLE
-app.post('/select_tableAll', (req, res) => {
+app.post("/select_tableAll", (req, res) => {
   let config = req.body.config;
   config.database = config.currentDb;
   const { user, password, host, database, currentTbl } = config;
@@ -180,7 +180,7 @@ app.post('/select_tableAll', (req, res) => {
   sendQuery
     .sendQuery({ user, password, host, database }, queries.genQuerySelectAllTable(currentTbl))
     .then((resp) => {
-      res.json({ success: 'GET_COLUMNS_ALL_SUCCESS', data: resp });
+      res.json({ success: "GET_COLUMNS_ALL_SUCCESS", data: resp });
     })
     .catch((error) => {
       res.json({ error: error });
@@ -188,7 +188,7 @@ app.post('/select_tableAll', (req, res) => {
 });
 
 // GET WHERE FROM TABLE
-app.post('/select_tableWhere', (req, res) => {
+app.post("/select_tableWhere", (req, res) => {
   let config = req.body.config;
   config.database = config.currentDb;
   const { user, password, host, database, currentTbl, searchColumn, searchValue } = config;
@@ -196,15 +196,33 @@ app.post('/select_tableWhere', (req, res) => {
   sendQuery
     .sendQuery(
       { user, password, host, database },
-      queries.genQuerySelectWhere(currentTbl, searchColumn, searchValue),
+      queries.genQuerySelectWhere(currentTbl, searchColumn, searchValue)
     )
     .then((resp) => {
-      console.log(resp);
-      res.json({ success: 'GET_COLUMNS_WHERE_SUCCESS', data: resp });
+      res.json({ success: "GET_COLUMNS_WHERE_SUCCESS", data: resp });
     })
     .catch((error) => {
       res.json({ error: error });
     });
 });
 
-app.listen(800, '127.0.0.1', () => console.log('Address: 127.0.0.1:800'));
+// UPDATE TABLE
+app.post("/update_row", (req, res) => {
+  let config = req.body.config;
+  config.database = config.currentDb;
+  const { user, password, host, database, currentTbl, oldRowData, newRowData } = config;
+
+  sendQuery
+    .sendQuery(
+      { user, password, host, database },
+      queries.genQueryUpdateRow(currentTbl, oldRowData, newRowData)
+    )
+    .then((resp) => {
+      res.json({ success: "UPDATE_TABLE_SUCCESS" });
+    })
+    .catch((error) => {
+      res.json({ error: error });
+    });
+});
+
+app.listen(800, "127.0.0.1", () => console.log("Address: 127.0.0.1:800"));

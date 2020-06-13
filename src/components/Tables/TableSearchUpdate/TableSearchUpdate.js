@@ -1,18 +1,28 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import Modal from 'components/atoms/Modal/Modal';
-import MainWindowTemplate from 'templates/MainWindowTemplate';
 
+import MainWindowTemplate from 'templates/MainWindowTemplate';
 import StyledTitle from 'components/atoms/StyledTitle/StyledTitle';
+
 import InputWithBorder from 'components/organisms/InputWithBorder/InputWithBorder';
-import viewIcon from 'assets/viewIcon.svg';
 import trashIcon from 'assets/trashIcon.svg';
 import editIcon from 'assets/editIcon.svg';
+import store from 'store';
+import { connect } from 'react-redux';
+
 import { StyledTable, StyledIconButton } from './TableSearchUpdateStyles';
 import { getTableAllDataAction, getTableWhereDataAction } from 'actions/index';
+import createKey from 'helpers/genReactKey';
 
 class TableSearchUpdate extends Component {
+  constructor() {
+    super();
+    this.state = {
+      activeRow: null,
+    };
+  }
+
   componentDidMount() {
     const searchInput = document.querySelector('.SearchInput');
     const { config, getTableColumnsAll, getTableColumnsWhere } = this.props;
@@ -39,6 +49,20 @@ class TableSearchUpdate extends Component {
     }
   }
 
+  createKey = (index) => {
+    return `searchRow_${index}`;
+  };
+
+  handleGoToRowEdit = (rowNumber) => {
+    const { columnsNames, columnsData } = this.props;
+    let rowToEdit = {};
+    columnsNames.forEach((item, index) =>
+      Object.assign(rowToEdit, { [item]: columnsData[rowNumber][index] }),
+    );
+    store.dispatch({ type: 'ROW_EDIT', payload: rowToEdit });
+    this.props.history.push({ pathname: `/rowDetails/${rowNumber}`, state: rowToEdit });
+  };
+
   render() {
     const { columnsNames, columnsData } = this.props;
     const { currentTbl } = this.props.config;
@@ -53,24 +77,26 @@ class TableSearchUpdate extends Component {
             height="25px"
             width="80%"
             label="Search in table"
-            placeholder="example: column_name=value (* -replaces any char)"
+            placeholder="column_name=value (% -any char)"
           />
           <StyledTable>
-            <tr>
-              {columnsNames.map((item) => (
-                <th>{item}</th>
-              ))}
-              <th>Options</th>
-            </tr>
             <tbody>
-              {columnsData.map((item) => (
-                <tr>
+              <tr>
+                {columnsNames.map((item) => (
+                  <th>{item}</th>
+                ))}
+                <th>Options</th>
+              </tr>
+              {columnsData.map((item, index) => (
+                <tr key={createKey(index)}>
                   {Object.values(item).map((val) => (
                     <td>{val}</td>
                   ))}
                   <td>
-                    <StyledIconButton icon={viewIcon} />
-                    <StyledIconButton icon={editIcon} />
+                    <StyledIconButton
+                      icon={editIcon}
+                      onClick={() => this.handleGoToRowEdit(index)}
+                    />
                     <StyledIconButton icon={trashIcon} />
                   </td>
                 </tr>
@@ -95,8 +121,8 @@ TableSearchUpdate.defaultProps = {
 };
 
 const mapStateToProps = (state) => {
-  const { config, columnsNames, columnsData } = state;
-  return { config, columnsNames, columnsData };
+  const { config, columnsNames, columnsData, rowEdit } = state;
+  return { config, columnsNames, columnsData, rowEdit };
 };
 
 const mapDispatchToProps = (dispatch) => ({

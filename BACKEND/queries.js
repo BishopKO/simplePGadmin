@@ -1,6 +1,6 @@
 // DATABASES
 const genQueryGetDatabases = () => {
-  return 'SELECT datname FROM pg_database';
+  return "SELECT datname FROM pg_database";
 };
 
 const genQueryGetTables = (databaseName) => {
@@ -25,17 +25,17 @@ const genQueryCreateTable = (columns, primaryKey) => {
     .slice(0, -1)
     .map((item, index) => {
       let { column_name, column_type, column_length } = item;
-      let column = '';
+      let column = "";
       column += `${column_name}  ${column_type} `;
       if (column_length > 0) {
         column += `(${column_length}) `;
       }
       if (primaryKey === index) {
-        column += 'PRIMARY KEY';
+        column += "PRIMARY KEY";
       }
       return column;
     })
-    .join(', ');
+    .join(", ");
 
   const tableName = JSON.parse(columns).slice(-1)[0].table_name;
   console.log(cols);
@@ -48,9 +48,9 @@ const genQueryDropTable = (tableName) => {
 };
 
 const genQueryInsertTable = (table, columnsData) => {
-  let columns = columnsData.map((item) => Object.keys(item)).toString();
-  let values = columnsData.map((item) => Object.values(item)).map((val) => `'${val}'`);
-
+  console.log(table);
+  let columns = Object.keys(columnsData);
+  let values = Object.values(columnsData).map((val) => `'${val}'`);
   return `INSERT INTO ${table} (${columns}) VALUES (${values})`;
 };
 
@@ -63,7 +63,20 @@ const genQuerySelectAllTable = (tableName) => {
 };
 
 const genQuerySelectWhere = (tableName, searchColumn, searchValue) => {
-  return `SELECT * FROM ${tableName} WHERE ${searchColumn}='${searchValue}'`;
+  console.log(searchValue);
+  if (searchValue.indexOf("%") === -1) {
+    return `SELECT * FROM ${tableName} WHERE ${searchColumn}='${searchValue}'`;
+  } else {
+    return `SELECT * FROM ${tableName} WHERE ${searchColumn} LIKE '${searchValue}'`;
+  }
+};
+
+const genQueryUpdateRow = (tableName, oldRowData, newRowData) => {
+  const newValues = Object.entries(newRowData).map(([name, value]) => `${name}='${value}'`);
+  const whereValues = Object.entries(oldRowData).map(([name, value]) => `${name}='${value}'`).join(" AND ");
+
+  return `UPDATE ${tableName} set ${newValues} where ${whereValues}`;
+
 };
 
 module.exports = {
@@ -78,4 +91,5 @@ module.exports = {
   genQueryInsertTable,
   genQuerySelectAllTable,
   genQuerySelectWhere,
+  genQueryUpdateRow
 };
