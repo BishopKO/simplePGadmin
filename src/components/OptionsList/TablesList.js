@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import createKey from 'helpers/genReactKey';
 import { connect } from 'react-redux';
 
 import {
@@ -20,6 +21,7 @@ class TablesList extends Component {
       options: [
         { value: 'tblOptions', name: 'Table options...' },
         { value: 'tblCreate', name: 'Create new table' },
+        { value: 'tblRename', name: 'Rename table' },
         { value: 'tblInsert', name: 'Insert into table' },
         { value: 'tblSearchUpdate', name: 'Search/Update table' },
         { value: 'tblDrop', name: 'Drop table' },
@@ -37,7 +39,7 @@ class TablesList extends Component {
       case 'tblInsert':
         return '/tblInsert/' + activeElement;
       case 'tblRename':
-        return '/tblRename/' + activeElement;
+        return '/tblRename/';
       case 'tblDrop':
         return '/tblDrop/' + activeElement;
       case 'tblSearchUpdate':
@@ -49,12 +51,8 @@ class TablesList extends Component {
 
   handleUseOption = (item) => {
     const path = this.createPathname(item);
-    this.props.history.push(path);
+    this.props.history.push({ pathname: path, state: { tableName: this.state.activeElement } });
   };
-
-  createKey(value, index) {
-    return `${index}_${value}`;
-  }
 
   render() {
     const { tables, config } = this.props;
@@ -69,7 +67,7 @@ class TablesList extends Component {
             >
               {this.state.options.map((item, index) => (
                 <option
-                  key={this.createKey(item, index)}
+                  key={createKey(item, index)}
                   value={item.value}
                   onClick={() => this.handleUseOption(item.value)}
                   disabled={
@@ -85,7 +83,7 @@ class TablesList extends Component {
           <StyledList>
             {tables.map((item, index) => (
               <StyledLi
-                key={this.createKey(item, index)}
+                key={createKey(item, index)}
                 onClick={() => {
                   this.setState({ activeElement: item });
                   config.currentTbl = item;

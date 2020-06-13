@@ -7,6 +7,7 @@ import TableInsertColumn from './TableInsertColumn';
 import saveIcon from 'assets/saveIcon.svg';
 import trashIcon from 'assets/trashIcon.svg';
 import IconButton from 'components/atoms/IconButton/IconButton';
+import createKey from 'helpers/genReactKey';
 import { insertTableAction } from 'actions';
 import { connect } from 'react-redux';
 import { StyledTitle, StyledButtonsWrapper } from './tableInsertStyles';
@@ -55,20 +56,16 @@ class TableInsert extends Component {
             };
           });
           this.setState({ columns: state });
+          console.log(state);
         }
       }.bind(this),
     );
   }
 
   handleSave = () => {
-    const { config, insertTable, history } = this.props;
-    const tableSession = JSON.parse(sessionStorage.getItem('columns'));
-    config.columnsData = Object.values(tableSession).map((item) => item);
+    const { config, insertTable, history, rowToEdit } = this.props;
+    config.columnsData = rowToEdit;
     insertTable(config).then(() => history.push('/'));
-  };
-
-  createKey = (item, index) => {
-    return `${item}_${index}`;
   };
 
   render() {
@@ -82,16 +79,17 @@ class TableInsert extends Component {
           </StyledTitle>
           <StyledButtonsWrapper>
             <IconButton onClick={this.handleSave} icon={saveIcon} label="Save" />
-            <IconButton icon={trashIcon} label="Undo" />
+            <IconButton icon={trashIcon} label="Undo" marginRight="10px" />
           </StyledButtonsWrapper>
 
           {/*TODO: ADD WRAPPER WITH OVERFLOW-Y AUTO*/}
           {this.state.columns.map((item, index) => (
             <TableInsertColumn
+              withRedux
               colNumber={index}
               autoIncrement={item.autoIncrement}
-              key={this.createKey(item, index)}
-              label={item.name}
+              key={createKey(item, index)}
+              name={item.name}
               type={item.type}
               length={item.length > 0 ? item.length.toString() : '-'}
             />
@@ -108,8 +106,8 @@ TableInsert.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  const { config } = state;
-  return { config };
+  const { config, rowToEdit } = state;
+  return { config, rowToEdit };
 };
 
 const mapDispatchToProps = (dispatch) => ({

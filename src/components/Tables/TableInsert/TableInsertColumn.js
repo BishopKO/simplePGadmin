@@ -11,36 +11,28 @@ class InsertColumn extends Component {
   }
 
   render() {
-    const { type, length, label, autoIncrement, colNumber } = this.props;
+    const { type, length, name, autoIncrement, colNumber, withRedux } = this.props;
 
     return (
       <StyledAddColumn>
         <InputWithBorder
+          withRedux
           colNumber={colNumber}
-          label={label}
-          value={autoIncrement ? 'AUTO' : null}
-          name={label}
+          label={name}
+          defaultValue={autoIncrement ? 'AUTO' : null}
+          name={name}
           disabled={autoIncrement}
-          activeUpdate
         />
-        <InputWithBorder label="type" value={type} disabled width="70px" centerText />
+        <InputWithBorder name="type" defaultValue={type} disabled width="70px" centerText />
         <InputWithBorder
-          name="column_length"
+          name="length"
           activeUpdate
           width="50px"
-          label="length"
-          value={length}
+          defaultValue={length}
           disabled
           centerText
         />
-        <InputWithBorder
-          name="column_pk"
-          label="PK"
-          width="20px"
-          height="20px"
-          type="checkbox"
-          disabled
-        />
+        <InputWithBorder name="pk" width="20px" height="20px" type="checkbox" disabled />
       </StyledAddColumn>
     );
   }

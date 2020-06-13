@@ -8,18 +8,18 @@ export const StyledTitle = styled.p`
   padding: 0;
   margin-top: 0;
   margin-bottom: 20px;
+  z-index: inherit;
   span {
     color: green;
   }
 `;
 
 export const StyledButtonsWrapper = styled.div`
-  width: 95%;
+  width: 100%;
   height: 50px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 10px;
   justify-content: flex-end;
   margin-bottom: 30px;
   border-bottom: 1px solid lightgrey;

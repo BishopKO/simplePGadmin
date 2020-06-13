@@ -2,6 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import BorderWithLabel from 'components/atoms/BorderWithLabel/BorderWithLabel';
+import store from 'store';
 
 const StyledInput = styled.input`
   font-size: 1rem;
@@ -21,47 +22,46 @@ const StyledInput = styled.input`
 `;
 
 const InputWithBorder = ({
-  label,
   type,
-  value,
   name,
   height,
   width,
   disabled,
   setPrimaryKey,
   checked,
+  defaultValue,
   colNumber,
-  activeUpdate,
   centerText,
   placeholder,
   className,
+  withRedux,
 }) => {
-  const valuesToSession = (colNumber, name, value) => {
-    let currentSession = JSON.parse(sessionStorage.getItem('columns'));
-    if (!currentSession[colNumber]) {
-      currentSession[colNumber] = {};
+  const handleOnChange = (name, value) => {
+    if (withRedux) {
+      if (colNumber) {
+        store.dispatch({
+          type: 'ROW_EDIT',
+          payload: { [colNumber]: { [name]: value } },
+        });
+      } else {
+        store.dispatch({ type: 'ROW_EDIT', payload: { [name]: value } });
+      }
     }
-    currentSession[colNumber] = Object.assign(currentSession[colNumber], {
-      [name]: value,
-    });
-    sessionStorage.setItem('columns', JSON.stringify(currentSession));
   };
 
   return (
-    <BorderWithLabel label={label} width={width} height={height} disabled={disabled}>
+    <BorderWithLabel label={name} width={width} height={height} disabled={disabled}>
       <StyledInput
         className={className}
         placeholder={placeholder}
         centerText={centerText}
         type={type}
-        value={value}
+        defaultValue={defaultValue}
         name={name}
         disabled={disabled}
         onClick={setPrimaryKey}
-        onChange={
-          activeUpdate ? (element) => valuesToSession(colNumber, name, element.target.value) : null
-        }
         checked={checked}
+        onChange={(element) => handleOnChange(name, element.target.value)}
       />
     </BorderWithLabel>
   );

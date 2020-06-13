@@ -7,12 +7,12 @@ const Button = styled.button`
   justify-content: center;
   align-items: center;
   text-decoration: none;
-  width: ${({ width }) => width || '100px'};
-  height: ${({ height }) => height || '25px'};
   border: none;
   border-radius: 3px;
   color: ${({ color }) => color || 'white'};
   background: ${({ bgColor }) => bgColor};
+  width: ${({ width }) => width || '100px'};
+  height: ${({ height }) => height || '25px'};
 
   :hover {
     transform: scale(1.05);

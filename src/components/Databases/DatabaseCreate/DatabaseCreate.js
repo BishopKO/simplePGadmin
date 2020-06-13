@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from 'components/atoms/Modal/Modal';
 import { createDatabaseAction, getDatabasesAction } from 'actions';
 import PropTypes from 'prop-types';
@@ -9,14 +9,14 @@ import Button from 'components/atoms/Button/Button';
 import MainWindowTemplate from 'templates/MainWindowTemplate';
 
 const DatabaseCreate = ({ config, createDatabase, getDatabases }) => {
+  const [dbName, setdbName] = useState('');
   let history = useHistory();
 
   const handleCreateDatabase = () => {
-    const name = document.querySelector('#databaseNameInput').value;
     const testName = RegExp('^[a-z_]+$');
 
-    if (name.length > 0 && testName.test(name)) {
-      config.currentDb = name;
+    if (dbName.length > 0 && testName.test(dbName)) {
+      config.currentDb = dbName;
       createDatabase(config)
         .then(() => getDatabases(config))
         .then(() => history.push('/'));
@@ -29,7 +29,10 @@ const DatabaseCreate = ({ config, createDatabase, getDatabases }) => {
     <MainWindowTemplate>
       <Modal height={'130px'} width={'300px'}>
         <StyledTitle>CREATE NEW DATABASE</StyledTitle>
-        <StyledInput id="databaseNameInput" placeholder="Database name." />
+        <StyledInput
+          onChange={(element) => setdbName(element.target.value)}
+          placeholder="Database name."
+        />
         <Button bgColor={'limegreen'} onClick={handleCreateDatabase}>
           Create
         </Button>
