@@ -1,18 +1,14 @@
 const initState = {
   config: { user: '', password: '', host: '', database: 'postgres', currentDb: '', currentTbl: '' },
   loggedIn: false,
-  loginCount: 0,
   databases: [],
   tables: [],
   columnsData: [],
   columnsNames: [],
   errors: [],
   loading: false,
-  update: false,
 
-  createTableForm: {},
-  insertTableForm: {},
-  rowToEdit: {},
+  tableSchema: {},
 };
 
 const myReducer = (state = initState, action) => {
@@ -21,7 +17,7 @@ const myReducer = (state = initState, action) => {
     case 'LOADING_DATA':
       return {
         ...state,
-        loading: true,
+        loading: false,
       };
     case 'AUTH_USER_SUCCESS':
       return {
@@ -33,7 +29,23 @@ const myReducer = (state = initState, action) => {
       return {
         ...state,
         loginCount: state.loginCount + 1,
-        error: 'Login failed',
+        errors: state.errors.concat(['Login failed']),
+      };
+
+    case 'DISCONNECT':
+      return {
+        ...state,
+        databases: [],
+        tables: [],
+        config: {
+          user: '',
+          password: '',
+          host: '',
+          database: 'postgres',
+          currentDb: '',
+          currentTbl: '',
+        },
+        loggedIn: false,
       };
     case 'GET_DATABASES_SUCCESS':
       return {
@@ -89,6 +101,9 @@ const myReducer = (state = initState, action) => {
       return {
         ...state,
         update: true,
+        insertData: {},
+        createData: {},
+        tableSchema: {},
       };
     case 'CREATE_TABLE_ERROR':
       return {
@@ -98,7 +113,7 @@ const myReducer = (state = initState, action) => {
     case 'GET_TABLE_SCHEMA_SUCCESS':
       return {
         ...state,
-        insertTableForm: action.payload.data,
+        tableSchema: action.payload.data,
       };
     case 'GET_TABLE_SCHEMA_ERROR':
       return {
@@ -140,12 +155,6 @@ const myReducer = (state = initState, action) => {
         loading: false,
         errors: state.errors.concat([action.payload.error]),
       };
-    case 'ROW_EDIT':
-      // TODO: user, password in dispatch?
-      return {
-        ...state,
-        rowToEdit: Object.assign(state.rowToEdit, action.payload),
-      };
     case 'UPDATE_ROW_SUCCESS':
       return {
         ...state,
@@ -155,11 +164,6 @@ const myReducer = (state = initState, action) => {
       return {
         ...state,
         loading: false,
-      };
-    case 'CREATE_TABLE_FORM':
-      return {
-        ...state,
-        createTableForm: Object.assign(state.createTableForm, action.payload),
       };
 
     default:

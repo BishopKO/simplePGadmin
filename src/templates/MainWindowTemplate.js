@@ -4,10 +4,8 @@ import DatabasesList from 'components/OptionsList/DatabasesList';
 import TablesList from 'components/OptionsList/TablesList';
 import StyledSpinner from 'components/atoms/Spinner/Spinner';
 
-import { PageContext } from 'context';
 import { getDatabasesAction, getTablesAction } from 'actions';
 import { connect } from 'react-redux';
-import store from 'store';
 
 const StyledWrapper = styled.div`
   position: relative;
@@ -20,7 +18,7 @@ const StyledWrapper = styled.div`
 
 class MainWindowTemplate extends Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { loggedIn, config, getDatabases, errors, loading, update, getTables } = this.props;
+    const { loggedIn, config, getDatabases, errors } = this.props;
     if (loggedIn) {
       getDatabases(config);
     }
@@ -36,10 +34,8 @@ class MainWindowTemplate extends Component {
       <StyledWrapper>
         {loading && <StyledSpinner />}
         {children}
-        <PageContext.Provider>
-          <DatabasesList history={this.props.history} />
-          <TablesList history={this.props.history} />
-        </PageContext.Provider>
+        <DatabasesList history={this.props.history} />
+        <TablesList history={this.props.history} />
       </StyledWrapper>
     );
   }

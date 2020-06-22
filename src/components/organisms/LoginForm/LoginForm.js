@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import store from 'store';
 
 import StyledInput from 'components/atoms/StyledInput/StyledInput';
 import BorderWithLabel from 'components/atoms/BorderWithLabel/BorderWithLabel';
@@ -12,34 +13,31 @@ import {
   StyledFormInputsWrapper,
 } from './loginFormStyles';
 
-const LoginForm = ({ config, loggedIn, authUser, loginCount }) => {
+const LoginForm = ({ config, loggedIn, errors, authUser }) => {
   const [loginForm, setLoginForm] = useState({});
 
-  const handleCheckLogin = () => {
-    // const { config, authUser } = this.props;
-    // document.querySelectorAll('.LoginForm InputWithBorder').forEach((item) => {
-    //   config[item.name] = item.value;
-    // });
-    // authUser(config);
-    console.log(loginForm);
+  const handleConnect = () => {
+    Object.entries(loginForm).forEach(([name, value]) => {
+      config[name] = value;
+    });
+    authUser(config);
   };
 
   useEffect(() => {
-    if (!loggedIn) {
-      const config = {
-        user: 'bishop',
-        password: 'ghost14',
-        database: 'postgres',
-        host: '127.0.0.1',
-      };
-      authUser(config);
+    let error = errors.slice(-1)[0];
+    console.log(errors.slice(-1));
+    if (error) {
+      alert(error);
     }
-  });
+  }, [errors]);
 
   const handleSetLoginForm = (element) => {
     const { name, value } = element.target;
-    console.log(name, value);
     setLoginForm(Object.assign(loginForm, { [name]: value }));
+  };
+
+  const handleDisconnect = () => {
+    store.dispatch({ type: 'DISCONNECT' });
   };
 
   return (
@@ -62,7 +60,7 @@ const LoginForm = ({ config, loggedIn, authUser, loginCount }) => {
             <StyledInput name="host" onChange={(element) => handleSetLoginForm(element)} />
           </BorderWithLabel>
         </StyledFormInputsWrapper>
-        <StyledButton type="button" onClick={() => console.log(loginForm)}>
+        <StyledButton type="button" onClick={loggedIn ? handleDisconnect : handleConnect}>
           {loggedIn ? 'Disconnect' : 'Connect'}
         </StyledButton>
       </StyledForm>
@@ -87,8 +85,8 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const mapStateToProps = (state) => {
-  const { config, loggedIn, loginCount } = state;
-  return { config, loggedIn, loginCount };
+  const { config, loggedIn, errors } = state;
+  return { config, loggedIn, errors };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

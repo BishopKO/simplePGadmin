@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useReducer } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -16,13 +16,13 @@ import BorderWithLabel from 'components/atoms/BorderWithLabel/BorderWithLabel';
 import { connect } from 'react-redux';
 import { StyledTitle, StyledButtonsWrapper } from './tableCreateStyles';
 import { createTableAction, getTablesAction } from 'actions';
-import store from 'store';
 import createKey from 'utils/genReactKey';
 import columnTypes from './columnTypes';
 
-const TableCreate = ({ history, config, createTableForm, createTable, getTables }) => {
+const TableCreate = ({ history, config, createTable, getTables }) => {
   const [columns, setColumnsNumber] = useState(0);
   const [primaryKeyColumn, setPrimaryKey] = useState(null);
+  const [tableData, setTableData] = useState({});
 
   const setPrimaryKeyColumn = (columnNumber) => {
     if (primaryKeyColumn !== columnNumber) {
@@ -41,19 +41,22 @@ const TableCreate = ({ history, config, createTableForm, createTable, getTables 
     setPrimaryKey(null);
   };
 
+  const handleSetTableName = (name) => {
+    setTableData(Object.assign(tableData, { table_name: name.target.value }));
+  };
+
+  const handleSetTableData = (value) => {
+    setTableData(Object.assign(tableData, value));
+  };
+
   const handleSaveTable = () => {
+    console.log(tableData);
     config.primaryKey = primaryKeyColumn;
-    config.tableData = createTableForm;
+    config.tableData = tableData;
 
     createTable(config)
       .then(() => getTables(config))
       .then(() => history.push('/'));
-  };
-
-  const handleUpdateFormData = (element) => {
-    const name = element.target.name;
-    const value = element.target.value;
-    store.dispatch({ type: 'CREATE_TABLE_FORM', payload: { [name]: value } });
   };
 
   const { currentDb } = config;
@@ -66,7 +69,7 @@ const TableCreate = ({ history, config, createTableForm, createTable, getTables 
 
         <StyledButtonsWrapper>
           <BorderWithLabel label="Table name">
-            <StyledInput name="table_name" onChange={(element) => handleUpdateFormData(element)} />
+            <StyledInput name="table_name" onChange={(element) => handleSetTableName(element)} />
           </BorderWithLabel>
           <div>
             <IconButton label="Add" icon={addIcon} onClick={handleCreateNewColumn} />
@@ -84,6 +87,7 @@ const TableCreate = ({ history, config, createTableForm, createTable, getTables 
               setPrimaryKey={() => setPrimaryKeyColumn(index)}
               isPrimaryKey={index === primaryKeyColumn}
               types={columnTypes}
+              updateData={handleSetTableData}
             />
           ))}
       </Modal>
@@ -105,8 +109,8 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const mapStateToProps = (state) => {
-  const { config, createTbl, createTableForm } = state;
-  return { config, createTbl, createTableForm };
+  const { config } = state;
+  return { config };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TableCreate);

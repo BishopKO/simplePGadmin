@@ -39,7 +39,7 @@ const Root = () => {
                 render={(props) => <RowDetails {...props} show={true} />}
               />
               <Route
-                path={'/tblSearchUpdate/:name'}
+                path={'/tblSearchUpdate'}
                 render={(props) => <TableSearchUpdate {...props} />}
               />
             </Switch>

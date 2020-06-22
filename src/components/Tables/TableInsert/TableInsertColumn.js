@@ -1,20 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import StyledInput from 'components/atoms/StyledInput/StyledInput';
 import BorderWithLabel from 'components/atoms/BorderWithLabel/BorderWithLabel';
 import { StyledAddColumn } from './tableInsertStyles';
 
-const InsertColumn = ({ name, type, length, colNumber }) => {
-  const [formData, setFormData] = useState({});
-
+const InsertColumn = ({ updateData, name, type, length, colNumber }) => {
   const handleOnChange = (element) => {
     const name = element.target.name;
     const value = element.target.value;
-    setFormData({ [name]: value });
+    updateData({ [name]: value });
   };
-
-  useEffect(() => {
-    console.log(formData);
-  });
 
   return (
     <StyledAddColumn>

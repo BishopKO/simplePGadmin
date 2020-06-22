@@ -178,15 +178,16 @@ app.post('/get_table_schema', (req, res) => {
 app.post('/insert_table', (req, res) => {
   let config = req.body.config;
   config.database = config.currentDb;
-  const { user, password, host, database, currentTbl, columnsData } = config;
+  const { user, password, host, database, currentTbl, insertData } = config;
+  console.log(config);
 
   sendQuery
     .sendQuery(
       { user, password, host, database },
-      queries.genQueryInsertTable(currentTbl, columnsData),
+      queries.genQueryInsertTable(currentTbl, insertData),
     )
     .then(() => {
-      res.json({ success: 'GET_COLUMNS_SUCCESS' });
+      res.json({ success: 'INSERT_TABLE_SUCCESS' });
     })
     .catch((error) => {
       res.json({ error: error.message });

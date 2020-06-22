@@ -22,21 +22,23 @@ const genQueryDropDatabase = (databaseName) => {
 // TABLES
 const genQueryCreateTable = (tableData, primaryKey) => {
   const tableName = tableData.table_name;
+  delete tableData.table_name;
 
   let data = Object.values(tableData)
-    .slice(0, -1)
     .map(({ column_name, column_type, column_length }, index) => {
-      let column = `${column_name} ${column_type}`;
-      if (parseInt(column_length) > 0) {
-        column += `(${column_length})`;
+      if (column_name) {
+        let column = `${column_name} ${column_type}`;
+        if (parseInt(column_length) > 0) {
+          column += `(${column_length})`;
+        }
+        if (index === primaryKey) {
+          column += ' PRIMARY KEY ';
+        }
+        return column;
       }
-      if (index === primaryKey) {
-        column += ' PRIMARY KEY ';
-      }
-      return column;
     })
     .toString();
-
+  console.log(data);
   return `CREATE TABLE ${tableName} (${data})`;
 };
 
@@ -48,11 +50,12 @@ const genQueryDropTable = (tableName) => {
   return `DROP TABLE ${tableName}`;
 };
 
-const genQueryInsertTable = (table, columnsData) => {
-  console.log(table);
-  let columns = Object.keys(columnsData);
-  let values = Object.values(columnsData).map((val) => `'${val}'`);
-  return `INSERT INTO ${table} (${columns}) VALUES (${values})`;
+const genQueryInsertTable = (tableName, columnData) => {
+  console.log(columnData);
+  let columns = Object.keys(columnData);
+
+  let values = Object.values(columnData).map((val) => `'${val}'`);
+  return `INSERT INTO ${tableName} (${columns}) VALUES (${values})`;
 };
 
 const genQueryGetTableSchema = (tableName) => {

@@ -22,7 +22,7 @@ const Modal = ({ children, table, width, height }) => {
         document.removeEventListener('mousedown', handleCloseOnMouseOut, false);
       })
       .then(() => {
-        history.push('/')
+        history.push('/');
       });
   };
 

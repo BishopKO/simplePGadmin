@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Modal from 'components/atoms/Modal/Modal';
 import MainWindowTemplate from 'templates/MainWindowTemplate';
@@ -23,12 +23,22 @@ const StyledRowsWrapper = styled.div`
   margin-top: 10px;
 `;
 
-const RowDetails = ({ location, history, config, rowToEdit, updateRow }) => {
+const RowDetails = ({ location, history, config, updateRow }) => {
+  const [rowData, setRowData] = useState({});
+
+  const handleSetRowData = (element) => {
+    const name = element.target.name;
+    const value = element.target.value;
+    Object.assign(rowData, { [name]: value });
+  };
+
   const handleUpdateRow = () => {
-    config.oldRowData = location.state;
-    config.newRowData = rowToEdit;
+    config.oldRowData = location.state.data;
+    config.newRowData = rowData;
     updateRow(config).then(() => history.goBack());
   };
+
+  const { data } = location.state;
 
   return (
     <MainWindowTemplate>
@@ -48,10 +58,14 @@ const RowDetails = ({ location, history, config, rowToEdit, updateRow }) => {
             onClick={handleUpdateRow}
           />
         </StyledButtonsWrapper>
-        {Object.entries(rowToEdit).map(([name, value]) => (
+        {Object.entries(data).map(([name, value]) => (
           <StyledRowsWrapper>
-            <BorderWithLabel label={name}>
-              <StyledInput defaultValue={value === 'pk'} />
+            <BorderWithLabel label={name} width="100%">
+              <StyledInput
+                defaultValue={value}
+                name={name}
+                onChange={(element) => handleSetRowData(element)}
+              />
             </BorderWithLabel>
           </StyledRowsWrapper>
         ))}
@@ -61,8 +75,8 @@ const RowDetails = ({ location, history, config, rowToEdit, updateRow }) => {
 };
 
 const mapStateToProps = (state) => {
-  const { columnsData, columnsNames, config, rowToEdit } = state;
-  return { columnsData, columnsNames, config, rowToEdit };
+  const { config } = state;
+  return { config };
 };
 
 const mapDispatchToProps = (dispatch) => ({

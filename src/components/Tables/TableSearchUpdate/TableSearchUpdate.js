@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Modal from 'components/atoms/Modal/Modal';
@@ -9,104 +9,89 @@ import StyledInput from 'components/atoms/StyledInput/StyledInput';
 
 import trashIcon from 'assets/trashIcon.svg';
 import editIcon from 'assets/editIcon.svg';
-import store from 'store';
 
 import { connect } from 'react-redux';
 import { StyledTable, StyledIconButton } from './TableSearchUpdateStyles';
 import { getTableAllDataAction, getTableWhereDataAction } from 'actions/index';
 import createKey from 'utils/genReactKey';
 
-class TableSearchUpdate extends Component {
-  constructor() {
-    super();
-    this.state = {
-      activeRow: null,
-    };
-  }
+const TableSearchUpdate = ({
+  history,
+  config,
+  columnsNames,
+  columnsData,
+  getColumnsAll,
+  getColumnsWhere,
+}) => {
+  const [updated, setUpdated] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
 
-  componentDidMount() {
-    const searchInput = document.querySelector('.SearchInput');
-    const { config, getTableColumnsAll, getTableColumnsWhere } = this.props;
+  // TODO: AVOID MULTIPLE UPDATES
+  useEffect(() => {
+    getColumnsAll(config);
 
-    getTableColumnsAll(config);
+    const searchOnEnterInput = document.querySelector('#searchOnEnter');
+    searchOnEnterInput.addEventListener('keypress', searchOnEnter);
+  }, []);
 
-    searchInput.addEventListener('keypress', (event) => {
-      if (event.key === 'Enter') {
-        const [column, value] = searchInput.value.split('=');
-        if (column.length > 0) {
-          config.searchColumn = column;
-          config.searchValue = value;
-          getTableColumnsWhere(config);
-        } else {
-          getTableColumnsAll(config);
-        }
+  const searchOnEnter = (evt) => {
+    if (evt.key === 'Enter') {
+      const searchOnEnterInput = document.querySelector('#searchOnEnter').value;
+      const [column, value] = searchOnEnterInput.split('=');
+      config.searchColumn = column;
+      config.searchValue = value;
+      if (value) {
+        getColumnsWhere(config);
+      } else {
+        getColumnsAll(config);
       }
-    });
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.columnsData.length === 0) {
-      this.props.history.push('/');
     }
-  }
-
-  createKey = (index) => {
-    return `searchRow_${index}`;
   };
 
-  handleGoToRowEdit = (rowNumber) => {
-    const { columnsNames, columnsData } = this.props;
-    let rowToEdit = {};
-    columnsNames.forEach((item, index) =>
-      Object.assign(rowToEdit, { [item]: columnsData[rowNumber][index] }),
-    );
-    store.dispatch({ type: 'ROW_EDIT', payload: rowToEdit });
-    this.props.history.push({ pathname: `/rowDetails/${rowNumber}`, state: rowToEdit });
+  const handleRowEdit = (colNumber) => {
+    const dataToEdit = {};
+    columnsNames.forEach((item, index) => {
+      Object.assign(dataToEdit, { [item]: columnsData[colNumber][index] });
+    });
+    history.push({ pathname: '/rowDetails', state: { data: dataToEdit } });
   };
 
-  render() {
-    const { columnsNames, columnsData } = this.props;
-    const { currentTbl } = this.props.config;
-    return (
-      <MainWindowTemplate>
-        <Modal table width={columnsNames.length * 100 + 'px'}>
-          <StyledTitle className="search_input" fontSize="1.5rem">
-            Table <span>{currentTbl}</span> entries:
-          </StyledTitle>
+  return (
+    <MainWindowTemplate>
+      <Modal table width="100px">
+        <StyledTitle className="search_input" fontSize="1.5rem">
+          Table <span>{config.currentTbl}</span> entries:
+        </StyledTitle>
 
-          <BorderWithLabel label="Search..." width="80%">
-            <StyledInput placeholder="column_name=value (% -any char)" />
-          </BorderWithLabel>
+        <BorderWithLabel label="Search..." width="80%">
+          <StyledInput id="searchOnEnter" placeholder="column_name=value (% -any char)" />
+        </BorderWithLabel>
 
-          <StyledTable>
-            <tbody>
-              <tr>
-                {columnsNames.map((item) => (
-                  <th>{item}</th>
-                ))}
-                <th>Options</th>
-              </tr>
-              {columnsData.map((item, index) => (
-                <tr key={createKey(index)}>
-                  {Object.values(item).map((val) => (
-                    <td>{val}</td>
-                  ))}
-                  <td>
-                    <StyledIconButton
-                      icon={editIcon}
-                      onClick={() => this.handleGoToRowEdit(index)}
-                    />
-                    <StyledIconButton icon={trashIcon} />
-                  </td>
-                </tr>
+        <StyledTable>
+          <tbody>
+            <tr>
+              {columnsNames.map((item) => (
+                <th>{item}</th>
               ))}
-            </tbody>
-          </StyledTable>
-        </Modal>
-      </MainWindowTemplate>
-    );
-  }
-}
+              <th>Options</th>
+            </tr>
+            {columnsData.map((item, index) => (
+              <tr key={createKey(index)}>
+                {Object.values(item).map((val) => (
+                  <td>{val}</td>
+                ))}
+                <td>
+                  <StyledIconButton icon={editIcon} onClick={() => handleRowEdit(index)} />
+                  <StyledIconButton icon={trashIcon} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </StyledTable>
+      </Modal>
+    </MainWindowTemplate>
+  );
+};
 
 TableSearchUpdate.propTypes = {
   config: PropTypes.object.isRequired,
@@ -120,13 +105,13 @@ TableSearchUpdate.defaultProps = {
 };
 
 const mapStateToProps = (state) => {
-  const { config, columnsNames, columnsData, rowEdit } = state;
-  return { config, columnsNames, columnsData, rowEdit };
+  const { config, columnsNames, columnsData } = state;
+  return { config, columnsNames, columnsData };
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  getTableColumnsAll: (config) => dispatch(getTableAllDataAction(config)),
-  getTableColumnsWhere: (config) => dispatch(getTableWhereDataAction(config)),
+  getColumnsAll: (config) => dispatch(getTableAllDataAction(config)),
+  getColumnsWhere: (config) => dispatch(getTableWhereDataAction(config)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TableSearchUpdate);

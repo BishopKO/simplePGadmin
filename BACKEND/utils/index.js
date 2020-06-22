@@ -13,7 +13,6 @@ const mapTypes = {
 
 const formatQueryDataInsert = (tableName, data) => {
   let tableSchema = {};
-  console.log(data);
 
   data.map((item, index) => {
     const { column_name, data_type, character_maximum_length, column_default } = item;
@@ -26,7 +25,6 @@ const formatQueryDataInsert = (tableName, data) => {
     }
     return Object.assign(tableSchema, { [index]: tmpData });
   });
-  tableSchema.table_name = tableName;
 
   return tableSchema;
 };
