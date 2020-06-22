@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import Button from "../../atoms/Button/Button";
+import styled from 'styled-components';
+import Button from '../../atoms/Button/Button';
 
 export const StyledWarning = styled.p`
   font-size: 1.5rem;

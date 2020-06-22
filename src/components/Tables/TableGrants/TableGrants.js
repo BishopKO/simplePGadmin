@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import { StyledGrants } from "../TableCreate/tableCreateStyles";
-import createKey from "helpers/genReactKey";
+import React, { Component } from 'react';
+import { StyledGrants } from '../TableCreate/tableCreateStyles';
+import createKey from 'helpers/genReactKey';
 
 class TableGrants extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      grants: { SELECT: true, INSERT: true, UPDATE: true, DELETE: true }
+      grants: { SELECT: true, INSERT: true, UPDATE: true, DELETE: true },
     };
     this.handleChangeGrants = this.handleChangeGrants.bind(this);
   }
@@ -23,11 +23,11 @@ class TableGrants extends Component {
 
   render() {
     return (
-      <StyledGrants label="Grants" width={"230px"}>
+      <StyledGrants label="Grants" width={'230px'}>
         {Object.entries(this.state.grants).map(([key, value], index) => (
           <label key="table_grants">
             <input
-              key={createKey("grant", index)}
+              key={createKey('grant', index)}
               type="checkbox"
               checked={value}
               onClick={(element) => this.handleChangeGrants(key)}
