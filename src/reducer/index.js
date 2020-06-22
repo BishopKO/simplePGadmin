@@ -12,7 +12,6 @@ const initState = {
 };
 
 const myReducer = (state = initState, action) => {
-  console.log('REDUCER: ', action);
   switch (action.type) {
     case 'LOADING_DATA':
       return {

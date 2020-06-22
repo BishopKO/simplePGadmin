@@ -13,7 +13,7 @@ import { insertTableAction, getTableSchemaAction } from 'actions';
 import { connect } from 'react-redux';
 import { StyledTitle, StyledButtonsWrapper } from './tableInsertStyles';
 
-const TableInsert = ({ config, tableSchema, getTableSchema, insertIntoTable }) => {
+const TableInsert = ({ history, config, tableSchema, getTableSchema, insertIntoTable }) => {
   const [updated, setUpdated] = useState(false);
   const [tableData, setTableData] = useState({});
 
@@ -29,7 +29,7 @@ const TableInsert = ({ config, tableSchema, getTableSchema, insertIntoTable }) =
 
   const handleSave = () => {
     config.insertData = tableData;
-    insertIntoTable(config);
+    insertIntoTable(config).then(() => history.goBack());
   };
 
   return (

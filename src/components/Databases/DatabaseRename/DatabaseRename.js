@@ -9,21 +9,20 @@ import { connect } from 'react-redux';
 import { getDatabasesAction, renameDatabaseAction } from 'actions';
 import PropTypes from 'prop-types';
 
-const DatabaseRename = ({ match, config, renameDatabase, getDatabases }) => {
-  const databaseName = match.params.name;
-
+const DatabaseRename = ({ config, renameDatabase, getDatabases }) => {
   let history = useHistory();
 
   const handleRename = () => {
     const renameInput = document.querySelector('#renameInput').value;
     console.log('Config', config);
 
-    config.currentDb = databaseName;
     config.newDbName = renameInput;
     renameDatabase(config)
       .then(() => getDatabases(config))
       .then(() => history.push('/'));
   };
+
+  const databaseName = config.currentDb;
 
   return (
     <MainWindowTemplate>

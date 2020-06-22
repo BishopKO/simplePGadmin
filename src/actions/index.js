@@ -1,9 +1,11 @@
 import axios from 'axios';
+const port = process.env.PORT || 800;
+const localAddress = `http://0.0.0.0:${port}`;
 
 // DATABASES
 export const authenticateAction = (config) => (dispatch) => {
   return axios
-    .post('http://127.0.0.1:800/login', {
+    .post(`${localAddress}/login`, {
       config,
     })
     .then((payload) => {
@@ -18,7 +20,7 @@ export const authenticateAction = (config) => (dispatch) => {
 
 export const getDatabasesAction = (config) => (dispatch) => {
   return axios
-    .post('http://127.0.0.1:800/databases', {
+    .post(`${localAddress}/databases`, {
       config,
     })
     .then((response) => {
@@ -33,7 +35,7 @@ export const getDatabasesAction = (config) => (dispatch) => {
 
 export const createDatabaseAction = (config) => (dispatch) => {
   return axios
-    .post('http://127.0.0.1:800/create_database', {
+    .post(`${localAddress}/create_database`, {
       config,
     })
     .then((resp) => {
@@ -48,7 +50,7 @@ export const createDatabaseAction = (config) => (dispatch) => {
 
 export const dropDatabaseAction = (config) => (dispatch) => {
   return axios
-    .post('http://127.0.0.1:800/drop_database', {
+    .post(`${localAddress}/drop_database`, {
       config,
     })
     .then((resp) => {
@@ -63,7 +65,7 @@ export const dropDatabaseAction = (config) => (dispatch) => {
 
 export const renameDatabaseAction = (config) => (dispatch) => {
   return axios
-    .post('http://127.0.0.1:800/rename_database', {
+    .post(`${localAddress}/rename_database`, {
       config,
     })
     .then((resp) => {
@@ -79,7 +81,7 @@ export const renameDatabaseAction = (config) => (dispatch) => {
 // TABLES
 export const getTablesAction = (config) => (dispatch) => {
   return axios
-    .post('http://127.0.0.1:800/tables', {
+    .post(`${localAddress}/tables`, {
       config,
     })
     .then((resp) => {
@@ -94,7 +96,7 @@ export const getTablesAction = (config) => (dispatch) => {
 
 export const createTableAction = (config) => (dispatch) => {
   return axios
-    .post('http://127.0.0.1:800/create_table', {
+    .post(`${localAddress}/create_table`, {
       config,
     })
     .then((resp) => {
@@ -109,7 +111,7 @@ export const createTableAction = (config) => (dispatch) => {
 
 export const renameTableAction = (config) => (dispatch) => {
   return axios
-    .post('http://127.0.0.1:800/rename_table', {
+    .post(`${localAddress}/rename_table`, {
       config,
     })
     .then((resp) => {
@@ -124,7 +126,7 @@ export const renameTableAction = (config) => (dispatch) => {
 
 export const insertTableAction = (config) => (dispatch) => {
   return axios
-    .post('http://127.0.0.1:800/insert_table', {
+    .post(`${localAddress}/insert_table`, {
       config,
     })
     .then((resp) => {
@@ -140,7 +142,7 @@ export const insertTableAction = (config) => (dispatch) => {
 export const updateRowAction = (config) => (dispatch) => {
   dispatch({ type: 'LOADING_DATA' });
   return axios
-    .post('http://127.0.0.1:800/update_row', {
+    .post(`${localAddress}/update_row`, {
       config,
     })
     .then((resp) => {
@@ -155,7 +157,7 @@ export const updateRowAction = (config) => (dispatch) => {
 
 export const dropTableAction = (config) => (dispatch) => {
   return axios
-    .post('http://127.0.0.1:800/drop_table', {
+    .post(`${localAddress}/drop_table`, {
       config,
     })
     .then((resp) => {
@@ -170,7 +172,7 @@ export const dropTableAction = (config) => (dispatch) => {
 
 export const getTableAllDataAction = (config) => (dispatch) => {
   return axios
-    .post('http://127.0.0.1:800/select_tableAll', {
+    .post(`${localAddress}/select_tableAll`, {
       config,
     })
     .then((resp) => {
@@ -186,7 +188,7 @@ export const getTableAllDataAction = (config) => (dispatch) => {
 export const getTableWhereDataAction = (config) => (dispatch) => {
   dispatch({ type: 'LOADING_DATA' });
   return axios
-    .post('http://127.0.0.1:800/select_tableWhere', {
+    .post(`${localAddress}/select_tableWhere`, {
       config,
     })
     .then((resp) => {
@@ -202,7 +204,7 @@ export const getTableWhereDataAction = (config) => (dispatch) => {
 export const getTableSchemaAction = (config) => (dispatch) => {
   dispatch({ type: 'LOADING_DATA' });
   return axios
-    .post('http://127.0.0.1:800/get_table_schema', {
+    .post(`${localAddress}/get_table_schema`, {
       config,
     })
     .then((resp) => {

@@ -3,10 +3,17 @@ const cors = require('cors');
 const sendQuery = require('./sendQuery');
 const queries = require('./queries');
 const formatData = require('./utils');
+const port = process.env.PORT || 800;
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+// if (process.env.NODE_ENV === 'production') {
+//   app.use(express.static('build'));
+// }
+
+app.use(express.static('build'));
 
 // LOGIN
 app.post('/login', (req, res) => {
@@ -240,7 +247,7 @@ app.post('/update_row', (req, res) => {
       { user, password, host, database },
       queries.genQueryUpdateRow(currentTbl, oldRowData, newRowData),
     )
-    .then((resp) => {
+    .then(() => {
       res.json({ success: 'UPDATE_TABLE_SUCCESS' });
     })
     .catch((error) => {
@@ -248,4 +255,4 @@ app.post('/update_row', (req, res) => {
     });
 });
 
-app.listen(800, '127.0.0.1', () => console.log('Address: 127.0.0.1:800'));
+app.listen(port, '127.0.0.1', () => console.log(`Listen on: ${port}`));

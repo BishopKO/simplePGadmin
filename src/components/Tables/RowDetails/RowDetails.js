@@ -29,7 +29,7 @@ const RowDetails = ({ location, history, config, updateRow }) => {
   const handleSetRowData = (element) => {
     const name = element.target.name;
     const value = element.target.value;
-    Object.assign(rowData, { [name]: value });
+    setRowData(Object.assign(rowData, { [name]: value }));
   };
 
   const handleUpdateRow = () => {
