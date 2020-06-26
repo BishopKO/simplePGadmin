@@ -150,7 +150,7 @@ LoginForm.defaultProps = {
 const mapDispatchToProps = (dispatch) => ({
   authUser: (config) => dispatch(authenticateAction(config)),
 });
-// TODO: fix mapStateToProps
+// TODO: fix mapStateToPropsfo
 const mapStateToProps = (state) => {
   const { config, loggedIn, errors } = state;
   return { config, loggedIn, errors };
