@@ -10,6 +10,7 @@ const BorderWithLabel = styled.div`
   justify-content: center;  
   border: 1px solid lightgrey;
   border-radius: 3px;
+  margin-top:10px;  
 
   ::after {
     position: absolute;
@@ -20,6 +21,7 @@ const BorderWithLabel = styled.div`
     padding: 0 2px 0 2px;
     top: -0.6rem;
     left: 1px;
+    color: ${({ color }) => color};    
   }  
   
    ${({ disabled }) =>

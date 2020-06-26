@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import store from 'store';
 
 import StyledInput from 'components/atoms/StyledInput/StyledInput';
@@ -13,14 +13,66 @@ import {
   StyledFormInputsWrapper,
 } from './loginFormStyles';
 
-const LoginForm = ({ config, loggedIn, errors, authUser }) => {
-  const [loginForm, setLoginForm] = useState({});
+const LoginForm = ({ loggedIn, errors, authUser }) => {
+  const formReducer = (state, { name, value }) => {
+    return {
+      ...state,
+      [name]: value,
+    };
+  };
+
+  const initState = {
+    user: '',
+    password: '',
+    database: 'postgres',
+    host: '',
+    port: '5432',
+    ssl: false,
+    errors: [],
+    loginCount: 0,
+  };
+
+  const [state, dispatch] = useReducer(formReducer, initState);
 
   const handleConnect = () => {
-    Object.entries(loginForm).forEach(([name, value]) => {
-      config[name] = value;
-    });
-    authUser(config);
+    let config = {};
+    config.user = state.user;
+    config.password = state.password;
+    config.database = state.database;
+    config.host = state.host;
+    config.port = state.port;
+    console.log(config);
+
+    if (Object.values(config).every((item) => item.length > 0)) {
+      console.log(1);
+      config.ssl = state.ssl;
+      authUser(config);
+    } else {
+      dispatch({ name: 'loginCount', value: state.loginCount + 1 });
+    }
+  };
+
+  const handleSetLoginData = (element) => {
+    const { name, value } = element.target;
+    if (name === 'ssl') {
+      dispatch({ name: 'ssl', value: +!state.ssl });
+    } else {
+      dispatch({ name: name, value: value });
+    }
+  };
+
+  const isError = (name) => {
+    if (state.loginCount > 0) {
+      if (state[name].length === 0) {
+        return 'red';
+      } else {
+        return 'black';
+      }
+    }
+  };
+
+  const handleDisconnect = () => {
+    store.dispatch({ type: 'DISCONNECT' });
   };
 
   useEffect(() => {
@@ -31,33 +83,48 @@ const LoginForm = ({ config, loggedIn, errors, authUser }) => {
     }
   }, [errors]);
 
-  const handleSetLoginForm = (element) => {
-    const { name, value } = element.target;
-    setLoginForm(Object.assign(loginForm, { [name]: value }));
-  };
-
-  const handleDisconnect = () => {
-    store.dispatch({ type: 'DISCONNECT' });
-  };
-
   return (
     <StyledWrapper>
       <StyledForm className="LoginForm">
         <StyledFormInputsWrapper>
-          <BorderWithLabel label="Username" width="100%">
-            <StyledInput name="user" onChange={(element) => handleSetLoginForm(element)} />
+          <BorderWithLabel label="username" width="100%" color={isError('user')}>
+            <StyledInput name="user" onChange={(element) => handleSetLoginData(element)} />
           </BorderWithLabel>
 
-          <BorderWithLabel label="password" width="100%">
+          <BorderWithLabel label="password" width="100%" color={isError('password')}>
             <StyledInput
               name="password"
               type="password"
-              onChange={(element) => handleSetLoginForm(element)}
+              onChange={(element) => handleSetLoginData(element)}
             />
           </BorderWithLabel>
 
-          <BorderWithLabel label="Host" width="100%">
-            <StyledInput name="host" onChange={(element) => handleSetLoginForm(element)} />
+          <BorderWithLabel label="database" width="100%" color={isError('database')}>
+            <StyledInput
+              name="database"
+              defaultValue={state.database}
+              onChange={(element) => handleSetLoginData(element)}
+            />
+          </BorderWithLabel>
+
+          <BorderWithLabel label="host" width="100%" color={isError('host')}>
+            <StyledInput name="host" onChange={(element) => handleSetLoginData(element)} />
+          </BorderWithLabel>
+
+          <BorderWithLabel label="port" width="100%" color={isError('port')}>
+            <StyledInput
+              name="port"
+              defaultValue={state.port}
+              onChange={(element) => handleSetLoginData(element)}
+            />
+          </BorderWithLabel>
+
+          <BorderWithLabel label="ssl" width="20px">
+            <StyledInput
+              name="ssl"
+              type="checkbox"
+              onChange={(element) => handleSetLoginData(element)}
+            />
           </BorderWithLabel>
         </StyledFormInputsWrapper>
         <StyledButton type="button" onClick={loggedIn ? handleDisconnect : handleConnect}>
@@ -83,7 +150,7 @@ LoginForm.defaultProps = {
 const mapDispatchToProps = (dispatch) => ({
   authUser: (config) => dispatch(authenticateAction(config)),
 });
-
+// TODO: fix mapStateToProps
 const mapStateToProps = (state) => {
   const { config, loggedIn, errors } = state;
   return { config, loggedIn, errors };

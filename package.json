@@ -32,7 +32,7 @@
     "build": "react-scripts build",
     "install-client": "npm install",
     "heroku-postbuild": "npm run install-client && npm run build",
-    "start": "node BACKEND/server.js",
+    "start": "react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "sudo nodemon ./BACKEND/server.js",
