@@ -1,7 +1,6 @@
 import React from 'react';
 import store from 'store';
 import MainTemplate from 'templates/MainTemplate';
-import UserTemplate from 'templates/UserTamplate';
 import MainWindowTemplate from 'templates/MainWindowTemplate';
 
 import DatabaseCreate from 'components/Databases/DatabaseCreate/DatabaseCreate';
@@ -22,29 +21,21 @@ const Root = () => {
   return (
     <Provider store={store}>
       <MainTemplate>
-        <UserTemplate>
-          <BrowserRouter>
-            <Switch>
-              <Route exact path="/" component={MainWindowTemplate} />
-              <Route path={'/dbCreate'} render={(props) => <DatabaseCreate {...props} />} />
-              <Route path={'/dbRename'} render={(props) => <DatabaseRename {...props} />} />
-              <Route path={'/dbDrop'} render={(props) => <DatabaseDrop {...props} />} />
+        <BrowserRouter>
+          <Switch>
+            <Route exact path="/" component={MainWindowTemplate} />
+            <Route path={'/dbCreate'} render={(props) => <DatabaseCreate {...props} />} />
+            <Route path={'/dbRename'} render={(props) => <DatabaseRename {...props} />} />
+            <Route path={'/dbDrop'} render={(props) => <DatabaseDrop {...props} />} />
 
-              <Route path={'/tblCreate'} render={(props) => <TableCreate {...props} />} />
-              <Route path={'/tblRename'} render={(props) => <TableRename {...props} />} />
-              <Route path={'/tblInsert'} render={(props) => <TableInsert {...props} />} />
-              <Route path={'/tblDrop'} render={(props) => <TableDrop {...props} />} />
-              <Route
-                path={'/rowDetails'}
-                render={(props) => <RowDetails {...props} show={true} />}
-              />
-              <Route
-                path={'/tblSearchUpdate'}
-                render={(props) => <TableSearchUpdate {...props} />}
-              />
-            </Switch>
-          </BrowserRouter>
-        </UserTemplate>
+            <Route path={'/tblCreate'} render={(props) => <TableCreate {...props} />} />
+            <Route path={'/tblRename'} render={(props) => <TableRename {...props} />} />
+            <Route path={'/tblInsert'} render={(props) => <TableInsert {...props} />} />
+            <Route path={'/tblDrop'} render={(props) => <TableDrop {...props} />} />
+            <Route path={'/rowDetails'} render={(props) => <RowDetails {...props} show={true} />} />
+            <Route path={'/tblSearchUpdate'} render={(props) => <TableSearchUpdate {...props} />} />
+          </Switch>
+        </BrowserRouter>
       </MainTemplate>
     </Provider>
   );
