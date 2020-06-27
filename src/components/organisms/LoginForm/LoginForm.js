@@ -1,19 +1,20 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import store from 'store';
 
-import StyledInput from 'components/atoms/StyledInput/StyledInput';
-import BorderWithLabel from 'components/atoms/BorderWithLabel/BorderWithLabel';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { authenticateAction } from 'actions';
+import { authenticateAction, getDatabasesAction } from 'actions';
 import {
   StyledWrapper,
   StyledButton,
   StyledForm,
   StyledFormInputsWrapper,
+  StyledBorderWithLabel,
+  StyledPortSSLWrapper,
+  StyledFormInput,
 } from './loginFormStyles';
 
-const LoginForm = ({ loggedIn, errors, authUser }) => {
+const LoginForm = ({ loggedIn, errors, authUser, getDatabasesList, databases, config }) => {
   const formReducer = (state, { name, value }) => {
     return {
       ...state,
@@ -25,7 +26,7 @@ const LoginForm = ({ loggedIn, errors, authUser }) => {
     user: '',
     password: '',
     database: 'postgres',
-    host: '',
+    host: '127.0.0.1',
     port: '5432',
     ssl: false,
     errors: [],
@@ -34,6 +35,12 @@ const LoginForm = ({ loggedIn, errors, authUser }) => {
 
   const [state, dispatch] = useReducer(formReducer, initState);
 
+  useEffect(() => {
+    if (loggedIn) {
+      getDatabasesList(config);
+    }
+  }, [loggedIn]);
+
   const handleConnect = () => {
     let config = {};
     config.user = state.user;
@@ -41,10 +48,8 @@ const LoginForm = ({ loggedIn, errors, authUser }) => {
     config.database = state.database;
     config.host = state.host;
     config.port = state.port;
-    console.log(config);
 
     if (Object.values(config).every((item) => item.length > 0)) {
-      console.log(1);
       config.ssl = state.ssl;
       authUser(config);
     } else {
@@ -75,57 +80,51 @@ const LoginForm = ({ loggedIn, errors, authUser }) => {
     store.dispatch({ type: 'DISCONNECT' });
   };
 
-  useEffect(() => {
-    let error = errors.slice(-1)[0];
-    console.log(errors.slice(-1));
-    if (error) {
-      alert(error);
-    }
-  }, [errors]);
-
   return (
     <StyledWrapper>
       <StyledForm className="LoginForm">
         <StyledFormInputsWrapper>
-          <BorderWithLabel label="username" width="100%" color={isError('user')}>
-            <StyledInput name="user" onChange={(element) => handleSetLoginData(element)} />
-          </BorderWithLabel>
+          <StyledBorderWithLabel label="username" width="100%" color={isError('user')}>
+            <StyledFormInput name="user" onChange={(element) => handleSetLoginData(element)} />
+          </StyledBorderWithLabel>
 
-          <BorderWithLabel label="password" width="100%" color={isError('password')}>
-            <StyledInput
+          <StyledBorderWithLabel label="password" width="100%" color={isError('password')}>
+            <StyledFormInput
               name="password"
               type="password"
               onChange={(element) => handleSetLoginData(element)}
             />
-          </BorderWithLabel>
+          </StyledBorderWithLabel>
 
-          <BorderWithLabel label="database" width="100%" color={isError('database')}>
-            <StyledInput
+          <StyledBorderWithLabel label="database" width="100%" color={isError('database')}>
+            <StyledFormInput
               name="database"
               defaultValue={state.database}
               onChange={(element) => handleSetLoginData(element)}
             />
-          </BorderWithLabel>
+          </StyledBorderWithLabel>
 
-          <BorderWithLabel label="host" width="100%" color={isError('host')}>
-            <StyledInput name="host" onChange={(element) => handleSetLoginData(element)} />
-          </BorderWithLabel>
+          <StyledBorderWithLabel label="host" width="100%" color={isError('host')}>
+            <StyledFormInput name="host" onChange={(element) => handleSetLoginData(element)} />
+          </StyledBorderWithLabel>
 
-          <BorderWithLabel label="port" width="100%" color={isError('port')}>
-            <StyledInput
-              name="port"
-              defaultValue={state.port}
-              onChange={(element) => handleSetLoginData(element)}
-            />
-          </BorderWithLabel>
+          <StyledPortSSLWrapper>
+            <StyledBorderWithLabel label="port" width="100px" color={isError('port')}>
+              <StyledFormInput
+                name="port"
+                defaultValue={state.port}
+                onChange={(element) => handleSetLoginData(element)}
+              />
+            </StyledBorderWithLabel>
 
-          <BorderWithLabel label="ssl" width="20px">
-            <StyledInput
-              name="ssl"
-              type="checkbox"
-              onChange={(element) => handleSetLoginData(element)}
-            />
-          </BorderWithLabel>
+            <StyledBorderWithLabel label="ssl" width="20px">
+              <StyledFormInput
+                name="ssl"
+                type="checkbox"
+                onChange={(element) => handleSetLoginData(element)}
+              />
+            </StyledBorderWithLabel>
+          </StyledPortSSLWrapper>
         </StyledFormInputsWrapper>
         <StyledButton type="button" onClick={loggedIn ? handleDisconnect : handleConnect}>
           {loggedIn ? 'Disconnect' : 'Connect'}
@@ -149,11 +148,12 @@ LoginForm.defaultProps = {
 
 const mapDispatchToProps = (dispatch) => ({
   authUser: (config) => dispatch(authenticateAction(config)),
+  getDatabasesList: (config) => dispatch(getDatabasesAction(config)),
 });
-// TODO: fix mapStateToPropsfo
+
 const mapStateToProps = (state) => {
-  const { config, loggedIn, errors } = state;
-  return { config, loggedIn, errors };
+  const { config, loggedIn, errors, databases } = state;
+  return { config, loggedIn, errors, databases };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

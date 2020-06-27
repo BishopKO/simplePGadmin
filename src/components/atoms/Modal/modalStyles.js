@@ -1,5 +1,5 @@
-import styled, { css } from "styled-components";
-import IconButton from "components/atoms/IconButton/IconButton";
+import styled, { css } from 'styled-components';
+import IconButton from 'components/atoms/IconButton/IconButton';
 
 export const StyledModal = styled.div`
   position: absolute;
@@ -13,14 +13,16 @@ export const StyledModal = styled.div`
   border-radius: 5px;
   background-color: white;
   z-index: 2;
-  min-width: ${({ width }) => width || "400px"};
-  min-height: ${({ height }) => height || "200px"};
+
+  left: ${({ marginLeft }) => marginLeft || '0'};
+  min-width: ${({ width }) => width || '400px'};
+  min-height: ${({ height }) => height || '200px'};
   border: ${({ theme }) => `2px solid ${theme.border}`};
   box-shadow: ${({ theme }) => `2px 2px 10px ${theme.border}`};
 
   ${({ table }) =>
-  table &&
-  css`
+    table &&
+    css`
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -31,6 +33,6 @@ export const StyledModal = styled.div`
 export const StyledCloseButton = styled(IconButton)`
   position: absolute;
   right: -25px;
-  top: 0;
+  top: 5px;
   width: 10px;
 `;

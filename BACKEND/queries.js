@@ -62,8 +62,8 @@ const genQueryGetTableSchema = (tableName) => {
   return `SELECT column_name, data_type, character_maximum_length, column_default FROM information_schema.columns where table_name='${tableName}' and table_schema='public'`;
 };
 
-const genQuerySelectAllTable = (tableName) => {
-  return `SELECT * from ${tableName}`;
+const genQuerySelectAllTable = (tableName, order) => {
+  return order ? `SELECT * from ${tableName} order by ${order}` : `SELECT * from ${tableName}`;
 };
 
 const genQuerySelectWhere = (tableName, searchColumn, searchValue) => {

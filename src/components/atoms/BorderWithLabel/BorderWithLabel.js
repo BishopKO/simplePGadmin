@@ -10,7 +10,7 @@ const BorderWithLabel = styled.div`
   justify-content: center;  
   border: 1px solid lightgrey;
   border-radius: 3px;
-  margin-top:10px;  
+  margin-top: ${({ marginTop }) => marginTop || '2px'};  
 
   ::after {
     position: absolute;

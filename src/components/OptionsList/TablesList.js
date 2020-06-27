@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import createKey from 'utils/genReactKey';
 import tablesListOptions from 'utils/tablesListOptions';
@@ -13,68 +14,60 @@ import {
   StyledBorder,
 } from './optionsListStyles';
 
-class TablesList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      activeElement: this.props.config.currentTbl,
-      activeOption: 'tblCreate',
-      options: tablesListOptions,
-    };
-    this.handleUseOption = this.handleUseOption.bind(this);
-  }
+const TablesList = ({ config, tables }) => {
+  const [selectedTable, setSelectedTable] = useState('');
+  const options = tablesListOptions;
+  const history = useHistory();
 
-  handleUseOption = (option) => {
-    this.props.history.push({
-      pathname: option,
-      state: { tblName: this.state.activeElement },
-    });
+  const handleSelectTable = (table) => {
+    setSelectedTable(table);
+    config.currentTbl = table;
   };
 
-  render() {
-    const { tables, config } = this.props;
+  const handleUseOption = (element) => {
+    const option = '/' + element.target.value;
+    history.push(option);
+  };
 
-    return (
-      <StyledBorder label="TABLES">
-        <StyledWrapper>
-          <StyledMenuWrapper>
-            <StyledSelect
-              onChange={(element) => this.handleUseOption(element.target.value)}
-              disabled={!config.currentDb}
-            >
-              {this.state.options.map((item, index) => (
-                <option
-                  key={createKey(item, index)}
-                  value={item.value}
-                  disabled={
-                    item.value !== 'tblOptions' && item.value !== 'tblCreate' && !config.currentTbl
-                  }
-                >
-                  {item.name}
-                </option>
-              ))}
-            </StyledSelect>
-          </StyledMenuWrapper>
-
-          <StyledList>
-            {tables.map((item, index) => (
-              <StyledLi
+  return (
+    <StyledBorder label="TABLES">
+      <StyledWrapper>
+        <StyledMenuWrapper>
+          <StyledSelect
+            onChange={(element) => handleUseOption(element)}
+            disabled={!config.currentDb}
+          >
+            {options.map((item, index) => (
+              <option
                 key={createKey(item, index)}
-                onClick={() => {
-                  this.setState({ activeElement: item });
-                  config.currentTbl = item;
-                }}
-                active={config.currentTbl === item}
+                value={item.value}
+                disabled={
+                  item.value !== 'tblOptions' && item.value !== 'tblCreate' && !config.currentTbl
+                }
               >
-                {item}
-              </StyledLi>
+                {item.name}
+              </option>
             ))}
-          </StyledList>
-        </StyledWrapper>
-      </StyledBorder>
-    );
-  }
-}
+          </StyledSelect>
+        </StyledMenuWrapper>
+
+        <StyledList>
+          {tables.map((item, index) => (
+            <StyledLi
+              key={createKey(item, index)}
+              onClick={() => {
+                handleSelectTable(item);
+              }}
+              active={selectedTable === item}
+            >
+              {item}
+            </StyledLi>
+          ))}
+        </StyledList>
+      </StyledWrapper>
+    </StyledBorder>
+  );
+};
 
 TablesList.propTypes = {
   tables: PropTypes.array.isRequired,

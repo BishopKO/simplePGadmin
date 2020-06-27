@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import createKey from 'utils/genReactKey';
+import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getTablesAction } from 'actions';
 
@@ -12,102 +14,62 @@ import {
   StyledWrapper,
 } from './optionsListStyles';
 
-class DatabasesList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      activeElement: this.props.config.currentDb,
-      activeOption: 'dbCreate',
-      options: [
-        { value: 'dbOptions', name: 'Database options...' },
-        { value: 'dbCreate', name: 'Create database' },
-        { value: 'dbRename', name: 'Rename database' },
-        { value: 'dbDrop', name: 'Drop database' },
-      ],
-    };
-    this.createPathname = this.createPathname.bind(this);
-    this.handleUseOption = this.handleUseOption.bind(this);
-    this.handleGetTablesOnClick = this.handleGetTablesOnClick.bind(this);
-  }
+const DatabasesList = ({ config, databases, getDatabaseTables, loggedIn }) => {
+  const [activeDb, setActiveDb] = useState('');
+  const history = useHistory();
 
-  createPathname(option) {
-    const { activeElement } = this.state;
-    switch (option) {
-      case 'dbCreate':
-        return '/dbCreate/';
-      case 'dbRename':
-        return '/dbRename/' + activeElement;
-      case 'dbDrop':
-        return '/dbDrop/' + activeElement;
-      default:
-        return '/';
-    }
-  }
+  const options = [
+    { value: 'dbOptions', name: 'Database options...' },
+    { value: '/dbCreate', name: 'Create database' },
+    { value: '/dbRename', name: 'Rename database' },
+    { value: '/dbDrop', name: 'Drop database' },
+  ];
 
-  createKey(item, index) {
-    return `${index}_${item}`;
-  }
-
-  componentDidUpdate() {
-    const { errors } = this.props;
-    if (errors) {
-      console.log(errors);
-    }
-  }
-
-  handleGetTablesOnClick(element) {
-    let config = this.props.config;
-    const getDatabaseTables = this.props.getDatabaseTables;
+  const handleSetActiveDb = (database) => {
     config.currentTbl = '';
-    config.currentDb = element;
+    config.currentDb = database;
+    setActiveDb(database);
     getDatabaseTables(config);
-    this.setState({ activeElement: element });
-  }
-
-  handleUseOption = (item) => {
-    console.log(item);
-    const path = this.createPathname(item, this.state.activeElement);
-    this.props.history.push(path);
   };
 
-  render() {
-    const { databases } = this.props;
-    return (
-      <StyledBorder label="DATABASES">
-        <StyledWrapper>
-          <StyledMenuWrapper>
-            <StyledSelect onChange={(element) => this.handleUseOption(element.target.value)}>
-              {this.state.options.map((item, index) => (
-                <option
-                  key={this.createKey(item, index)}
-                  value={item.value}
-                  disabled={
-                    item.value !== 'dbOptions' &&
-                    item.value !== 'dbCreate' &&
-                    !this.state.activeElement
-                  }
-                >
-                  {item.name}
-                </option>
-              ))}
-            </StyledSelect>
-          </StyledMenuWrapper>
+  const handleUseOption = (option) => {
+    history.push(option.target.value);
+  };
+
+  return (
+    <StyledBorder label="Databases">
+      <StyledWrapper>
+        <StyledMenuWrapper>
+          <StyledSelect disabled={!loggedIn} onChange={(element) => handleUseOption(element)}>
+            {options.map((item, index) => (
+              <option
+                key={createKey(item, index)}
+                value={item.value}
+                disabled={item.value !== 'dbOptions' && item.value !== '/dbCreate' && !activeDb}
+              >
+                {item.name}
+              </option>
+            ))}
+          </StyledSelect>
+        </StyledMenuWrapper>
+
+        {loggedIn && (
           <StyledList>
             {databases.map((item, index) => (
               <StyledLi
-                key={this.createKey(item, index)}
-                onClick={() => this.handleGetTablesOnClick(item)}
-                active={this.state.activeElement === item}
+                key={createKey(item, index)}
+                onClick={() => handleSetActiveDb(item)}
+                active={activeDb === item}
               >
                 {item}
               </StyledLi>
             ))}
           </StyledList>
-        </StyledWrapper>
-      </StyledBorder>
-    );
-  }
-}
+        )}
+      </StyledWrapper>
+    </StyledBorder>
+  );
+};
 
 DatabasesList.propTypes = {
   config: PropTypes.object.isRequired,
@@ -124,8 +86,8 @@ DatabasesList.defaultProps = {
 };
 
 const mapStateToProps = (state) => {
-  const { config, databases } = state;
-  return { config, databases };
+  const { config, databases, tables, loggedIn } = state;
+  return { config, databases, tables, loggedIn };
 };
 
 const mapDispatchToProps = (dispatch) => ({

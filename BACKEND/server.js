@@ -205,10 +205,13 @@ app.post('/insert_table', (req, res) => {
 app.post('/select_tableAll', (req, res) => {
   let config = req.body.config;
   config.database = config.currentDb;
-  const { user, password, host, database, currentTbl } = config;
+  const { user, password, host, database, currentTbl, order } = config;
 
   sendQuery
-    .sendQuery({ user, password, host, database }, queries.genQuerySelectAllTable(currentTbl))
+    .sendQuery(
+      { user, password, host, database },
+      queries.genQuerySelectAllTable(currentTbl, order),
+    )
     .then((resp) => {
       res.json({ success: 'GET_COLUMNS_ALL_SUCCESS', data: resp });
     })

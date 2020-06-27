@@ -23,10 +23,6 @@ const TableSearchUpdate = ({
   getColumnsAll,
   getColumnsWhere,
 }) => {
-  const [updated, setUpdated] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
-
-  // TODO: AVOID MULTIPLE UPDATES
   useEffect(() => {
     getColumnsAll(config);
 
@@ -46,6 +42,11 @@ const TableSearchUpdate = ({
         getColumnsAll(config);
       }
     }
+  };
+
+  const sortBy = (columnName) => {
+    config.order = columnName;
+    getColumnsAll(config);
   };
 
   const handleRowEdit = (colNumber) => {
@@ -71,7 +72,7 @@ const TableSearchUpdate = ({
           <tbody>
             <tr>
               {columnsNames.map((item) => (
-                <th>{item}</th>
+                <th onClick={() => sortBy(item)}>{item}</th>
               ))}
               <th>Options</th>
             </tr>

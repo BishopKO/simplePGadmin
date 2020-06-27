@@ -1,8 +1,10 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import DatabasesList from 'components/OptionsList/DatabasesList';
 import TablesList from 'components/OptionsList/TablesList';
 import StyledSpinner from 'components/atoms/Spinner/Spinner';
+import LoginForm from 'components/organisms/LoginForm/LoginForm';
+import { TweenMax, Linear } from 'gsap';
 
 import { getDatabasesAction, getTablesAction } from 'actions';
 import { connect } from 'react-redux';
@@ -11,39 +13,36 @@ const StyledWrapper = styled.div`
   position: relative;
   padding: 10px;
   display: grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 170px 450px;
   grid-gap: 2px;
-  justify-items: center;
 `;
 
-class MainWindowTemplate extends Component {
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const { loggedIn, config, getDatabases, errors } = this.props;
-    if (loggedIn) {
-      getDatabases(config);
-    }
-    if (prevProps.errors.length < errors.length) {
-      console.log(errors.slice(-1));
-    }
-  }
+const MainWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 50% 50%;
+`;
 
-  render() {
-    const { children, loading } = this.props;
+const MainWindowTemplate = ({ loggedIn, loading, errors, children }) => {
+  useEffect(() => {
+    console.log(loggedIn);
+  }, [loggedIn, errors]);
 
-    return (
-      <StyledWrapper>
-        {loading && <StyledSpinner />}
-        {children}
-        <DatabasesList history={this.props.history} />
-        <TablesList history={this.props.history} />
-      </StyledWrapper>
-    );
-  }
-}
+  return (
+    <StyledWrapper>
+      {loading && <StyledSpinner />}
+      {children}
+      <LoginForm />
+      <MainWrapper id="mainWindow">
+        <DatabasesList />
+        <TablesList />
+      </MainWrapper>
+    </StyledWrapper>
+  );
+};
 
 const mapStateToProps = (state) => {
-  const { config, loggedIn, errors, loading, update } = state;
-  return { config, loggedIn, errors, loading, update };
+  const { config, loggedIn, errors, loading } = state;
+  return { config, loggedIn, errors, loading };
 };
 
 const mapDispatchToProps = (dispatch) => ({

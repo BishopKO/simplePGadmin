@@ -9,8 +9,10 @@ const Modal = ({ children, table, width, height }) => {
 
   useEffect(() => {
     const modal = document.querySelector('#modal');
-
-    TweenMax.to(modal, 0.3, { transform: 'scale(1)' }).then(() => {
+    modal.style.left = `calc(50% - ${modal.clientWidth / 2}px)`;
+    TweenMax.to(modal, 0.3, {
+      transform: 'scale(1)',
+    }).then(() => {
       document.addEventListener('mousedown', handleCloseOnMouseOut);
     });
   });

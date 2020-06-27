@@ -2,19 +2,15 @@ import React from 'react';
 import Modal from 'components/atoms/Modal/Modal';
 import MainWindowTemplate from 'templates/MainWindowTemplate';
 import { connect } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { dropDatabaseAction, getDatabasesAction } from 'actions';
 import PropTypes from 'prop-types';
 import { StyledQuestion, StyledButtonsWrapper, StyledWarning } from './databaseDropStyles';
 import Button from 'components/atoms/Button/Button';
 
-const DatabaseDrop = ({ match, dropDatabase, getDatabases, config }) => {
-  const databaseName = match.params.name;
-
-  let history = useHistory();
-
+const DatabaseDrop = ({ history, dropDatabase, getDatabases, config }) => {
+  const database = config.currentDb;
   const handleDropDatabase = () => {
-    config.currentDb = databaseName;
+    config.currentDb = database;
     dropDatabase(config)
       .then(() => getDatabases(config))
       .then(() => history.push('/'));
@@ -24,7 +20,7 @@ const DatabaseDrop = ({ match, dropDatabase, getDatabases, config }) => {
     <MainWindowTemplate>
       <Modal height={'130px'} width={'350px'}>
         <StyledWarning>
-          DROP DATABASE <span>{databaseName}</span> !
+          DROP DATABASE <span>{database}</span> !
         </StyledWarning>
         <StyledQuestion>Are You sure You want to delete database?</StyledQuestion>
         <StyledButtonsWrapper>

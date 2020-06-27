@@ -1,22 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import Modal from 'components/atoms/Modal/Modal';
 import MainWindowTemplate from 'templates/MainWindowTemplate';
 
-import { StyledTitle, StyledInput } from './databaseRenameStyles';
 import Button from 'components/atoms/Button/Button';
-import { useHistory } from 'react-router-dom';
+import { StyledTitle, StyledInput } from './databaseRenameStyles';
 import { connect } from 'react-redux';
 import { getDatabasesAction, renameDatabaseAction } from 'actions';
-import PropTypes from 'prop-types';
 
-const DatabaseRename = ({ config, renameDatabase, getDatabases }) => {
-  let history = useHistory();
+const DatabaseRename = ({ history, config, renameDatabase, getDatabases }) => {
+  const [newDbName, setNewDbName] = useState('');
 
   const handleRename = () => {
-    const renameInput = document.querySelector('#renameInput').value;
-    console.log('Config', config);
-
-    config.newDbName = renameInput;
+    config.newDbName = newDbName;
     renameDatabase(config)
       .then(() => getDatabases(config))
       .then(() => history.push('/'));
@@ -24,13 +20,17 @@ const DatabaseRename = ({ config, renameDatabase, getDatabases }) => {
 
   const databaseName = config.currentDb;
 
+  const handleOnChange = (element) => {
+    setNewDbName(element.target.value);
+  };
+
   return (
     <MainWindowTemplate>
       <Modal height={'130px'} width={'300px'}>
         <StyledTitle>
           RENAME DATABASE <span>{databaseName}</span> TO:
         </StyledTitle>
-        <StyledInput id="renameInput" placeholder="Database name." />
+        <StyledInput placeholder="Database name." onChange={(element) => handleOnChange(element)} />
         <Button bgColor={'limegreen'} onClick={handleRename}>
           Save
         </Button>
